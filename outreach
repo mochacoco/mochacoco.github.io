@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <title> 2021 영월 아웃리치 </title>
+    <script language="JavaScript">
+    
+    $(document).ready(function(){ $(document).bind('keydown',function(e){ if ( e.keyCode == 123 /* F12 */) { e.preventDefault(); e.returnValue = false; } }); });
+      function login()
+      {
+        password = document.outreach.txt1.value
+        if(password == "2108") alert("사이즈 2XL");
+        
+        
+        
+      }
+    </script>
+  <body>
+    <form name="outreach">
+    <br>
+    <br>
+    <br>
+    <center>
+      <h1> 영월 아웃리치 정보확인 </h1>
+      <p></p><p></p>
+      <h3> 티셔츠 정보 확인: 핸드폰 뒷 4자리 </h3>
+      <p></p><p></p>
+      <table border="1" bordercolor="green" width="300" height="30">
+        <tbody>
+          <tr>
+            <td width="100">
+              <center>
+                <a href="비밀번호 입력.html">Journal</a>
+              </center>
+            </td>
+            <td width="200">
+              <center>
+                <input type="text" name="txt1>
+              </center>
+            </td>
+          </tr>
+          <input type="button" value="확인" onclick="Login()">
+        </tbody>
+      </table>
+      <br>
+    </center>
+  </body>
+</html>
