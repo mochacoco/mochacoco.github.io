@@ -15,8 +15,13 @@ case 123:event.keyCode='';alert("Source hidden");return false; break;
       function login_T()
       {
 alert("아직 안나왔어요");
-
-      
+      }
+      function login_Z()
+      {
+        let today = new Date();
+        let day = today.getDay();
+        if (day != 26) alert("아직 회의 시작 전입니다");
+        else <a href="https://snu-ac-kr.zoom.us/j/82045756648?pwd=RjJoYmllWVpBUGk1T3hsMzQ4RlRBZz09"></a>;
       }
     </script>
   <body>
@@ -39,6 +44,18 @@ alert("아직 안나왔어요");
             <td width="100">
               <center>
                 <input type="button" value="확인" onclick="login_T()">
+              </center>
+            </td>
+          </tr>
+          <tr>
+            <td width="300">
+              <center>
+                <p>6월 26일 온라인 미팅</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <input type="button" value="참석하기" onclick="login_Z()">
               </center>
             </td>
           </tr>
