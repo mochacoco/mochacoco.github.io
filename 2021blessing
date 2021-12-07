@@ -1,0 +1,195 @@
+<html>
+  <head>
+    <title> 2021 Seed 크리스마스 블레싱 </title>
+    <script language="JavaScript">
+    var keydownCtrl = 0;
+var keydownShift = 0;
+document.onkeydown = keycheck;
+function keycheck()
+{
+switch(event.keyCode){
+case 123:event.keyCode='';alert("Source hidden");return false; break;
+}
+}
+
+
+    </script>
+
+
+</head>
+
+  <body>
+    <form name="christmas">
+    <br>
+    <br>
+    <br>
+    <center>
+      <h1> 2021 Seed 크리스마스 블레싱 </h1>
+<br>
+<h3>원곡 음원 링크</h3>
+      <table border="1" bordercolor="blue" width="500" height="30">
+        <tbody>
+          <tr>
+            <td width="400">
+              <center>
+                <p>[음원 1] WeLove - O Come, All Ye Faithful</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+<a href="https://www.youtube.com/watch?v=EyUAzwuXH_A">링크</a>
+              </center>
+            </td>
+          </tr>
+          
+                    <tr>
+            <td width="400">
+              <center>
+                <p>[음원 2] PlanetShakers - O Come, All Ye Faithful</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <a href="https://www.youtube.com/watch?v=zHlVKffU184">링크</a>
+              </center>
+            </td>
+          </tr>
+          
+            <tr>
+            <td width="400">
+              <center>
+                <p>[음원 3] NCT Dream - JOY</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <a href="https://www.youtube.com/watch?v=VMMl0DopcdM">링크</a>
+              </center>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+    <br>
+    <br>
+      
+      
+    <h3>자료실</h3>
+      <table border="1" bordercolor="green" width="400" height="30">
+        <tbody>
+          <tr>
+            <td width="300">
+              <center>
+                <p>총보</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <input type="button" value="다운로드" onclick="location.href='blessing_sheet.pdf'">
+              </center>
+            </td>
+          </tr>
+           <tr>
+            <td width="300">
+              <center>
+                <p>가사</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <input type="button" value="다운로드" onclick="location.href='blessing_chorus.pdf'">
+              </center>
+            </td>
+          </tr>
+          <tr>
+            <td width="300">
+              <center>
+                <p>싱어별 가사 파트</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <input type="button" value="다운로드" onclick="location.href='blessing_parts.pdf'">
+              </center>
+            </td>
+          </tr>
+          
+                    <tr>
+            <td width="300">
+              <center>
+                <p>가이드 (MR)</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <input type="button" value="다운로드" onclick="location.href='blessing_mr.mp3'">
+              </center>
+            </td>
+          </tr>
+
+          <tr>
+            <td width="300">
+              <center>
+                <p>가이드 (총보 재생)</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <input type="button" value="다운로드" onclick="location.href='blessing_sheet_playback.mp3'">
+              </center>
+            </td>
+          </tr>
+<tr>
+            <td width="300">
+              <center>
+                <p>가이드 (안무)</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <input type="button" value="다운로드" onclick="location.href='blessing_dance.mp4'">
+              </center>
+            </td>
+          </tr>
+<tr>
+            <td width="300">
+              <center>
+                <p>세션 연습용 백킹트랙 (F Blues)</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <a href="https://www.youtube.com/watch?v=s8KWAr-ZAwU">링크</a>
+              </center>
+            </td>
+          </tr>
+<tr>
+            <td width="300">
+              <center>
+                <p>세션 연습용 백킹트랙 (F7)</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <a href="https://www.youtube.com/watch?v=tlTXeK3hC-k">링크</a>
+              </center>
+            </td>
+          </tr>
+<tr>
+            <td width="300">
+              <center>
+                <p>세션 참고영상 (F Blues Solo Line)</p>
+              </center>
+            </td>
+            <td width="100">
+              <center>
+                <a href="https://www.youtube.com/watch?v=CT9yG2X9-Ls">링크</a>
+              </center>
+            </td>
+          </tr>
+</tbody>
+      </table>
+      <br>
+    </center>
+  </body>
+</html>
