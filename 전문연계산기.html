@@ -208,38 +208,6 @@ document.getElementById(&quot;amount_mob&quot;).innerHTML = &quot; 금요일 근
         <br>
       </div>
       
-    <div id="value_collect">
-    <input id="default_rate" type="hidden" value="0">
-    <input id="exp_coupon_rate" type="hidden" value="0">
-    <input id="exp_weather_rate" type="hidden" value="0">
-    <input id="ex_gold_rate" type="hidden" value="0">
-    <input id="exp_potion_rate" type="hidden" value="0">
-    <input id="zero_rate" type="hidden" value="0">
-    <input id="elf_rate" type="hidden" value="0">
-    <input id="pendant_rate" type="hidden" value="0">
-    <input id="ring_rate" type="hidden" value="0">
-    <input id="burning_rate" type="hidden" value="0">
-    <input id="hyper_rate" type="hidden" value="0">
-    <input id="union_rate" type="hidden" value="0">
-    <input id="user_rate" type="hidden" value="0">
-    <input id="roon_rate" type="hidden" value="0">
-    <input id="loaded_rate" type="hidden" value="0">
-    <input id="pc_rate" type="hidden" value="0">
-    <input id="mob_level" type="hidden" value="0">
-    </div>
-
-    <script>
-      document.addEventListener('click',function(e){
-        if(e.target.id == "mob_tr_child"){
-          mother = e.target.parentNode;
-          mother = mother.value
-          mother = mother.split(",")
-          let mob_exp = mother[1]
-          document.getElementById("mob_exp").value = mob_exp;
-          document.getElementById("mob_level").value = mother[0]
-        }
-      });
-    </script>
     </div>
   
 
