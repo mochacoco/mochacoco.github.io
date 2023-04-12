@@ -25,6 +25,9 @@ function calc_single(start, end){
 	if (timediff1 >= 12 * 60 * 60 * 1000){
 	timediff1 = timediff1 - 0.5 * 60 * 60 * 1000;
 }
+	if (timediff1 >= 12 * 60 * 60 * 1000){
+	timediff1 = 12 * 60 * 60 * 1000;
+}
 	
 	var hour1 = Math.floor(timediff1 / (1000 * 60 * 60));
 	
