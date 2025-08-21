@@ -25,10 +25,9 @@
     *{box-sizing:border-box}
     html,body{margin:0;padding:0}
     body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.6}
-    a{color:var(--accent); text-decoration:none}
-    a:hover{text-decoration:underline}
+    a{color:inherit; text-decoration:none}
+    a:hover{text-decoration:underline; color:var(--accent)}
     .container{max-width:1100px; margin:0 auto; padding:0 20px}
-    /* Header */
     header.site{position:sticky; top:0; z-index:50; backdrop-filter:saturate(180%) blur(10px); background:color-mix(in srgb, var(--bg) 80%, transparent); border-bottom:1px solid var(--ring)}
     .nav{display:flex; align-items:center; justify-content:space-between; height:64px}
     .brand{display:flex; gap:12px; align-items:center}
@@ -37,7 +36,7 @@
     nav ul{list-style:none; display:flex; gap:22px; margin:0; padding:0}
     nav a{color:var(--text); opacity:.9}
     .mobile-toggle{display:none}
-    /* Hero */
+    .mobile-menu{display:none}
     .hero{padding:80px 0 40px;}
     .hero-grid{display:grid; grid-template-columns:1.3fr .7fr; gap:28px; align-items:center}
     .badge{display:inline-flex; align-items:center; gap:8px; background:var(--panel); border:1px solid var(--ring); color:var(--muted); padding:6px 10px; border-radius:999px; font-size:12px}
@@ -48,7 +47,6 @@
     .btn.secondary{background:transparent; color:var(--text); border:1px solid var(--ring)}
     .hero-card{background:var(--panel); border:1px solid var(--ring); border-radius:16px; padding:18px; box-shadow:var(--shadow)}
     .hero-card video, .hero-card img{width:100%; border-radius:12px; display:block}
-    /* Sections */
     section{padding:50px 0}
     .section-title{font-size:20px; margin:0 0 18px; letter-spacing:.3px}
     .grid{display:grid; gap:18px}
@@ -57,18 +55,12 @@
     .card{background:var(--card); border:1px solid var(--ring); border-radius:16px; padding:18px; box-shadow:var(--shadow)}
     .card h3{margin:0 0 8px; font-size:16px}
     .muted{color:var(--muted)}
-    .paper-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-    .chip{border:1px solid var(--ring); color:var(--muted); padding:4px 8px; border-radius:999px; font-size:12px}
-    /* Timeline / News */
     .timeline{position:relative; padding-left:20px}
     .timeline::before{content:""; position:absolute; left:6px; top:4px; bottom:4px; width:2px; background:var(--ring)}
     .titem{position:relative; padding-left:18px; margin:10px 0}
     .titem::before{content:""; position:absolute; left:-2px; top:8px; width:10px; height:10px; border-radius:50%; background:var(--accent)}
-    /* Footer */
     footer{border-top:1px solid var(--ring); padding:28px 0 60px; color:var(--muted)}
     .social{display:flex; gap:14px}
-    .social a{opacity:.9}
-    /* Responsive */
     @media (max-width: 900px){
       .hero-grid{grid-template-columns:1fr}
       .grid.cols-3{grid-template-columns:1fr}
@@ -100,184 +92,161 @@
       </nav>
       <button class="mobile-toggle" aria-label="Open menu" id="menuBtn">≡</button>
     </div>
-    <div class="container mobile-menu" id="mobileMenu">
-      <a href="#about">About</a>
-      <a href="#research">Research</a>
-      <a href="#publications">Publications</a>
-      <a href="#news">News</a>
-      <a href="#media">Media</a>
-      <a href="#contact">Contact</a>
-    </div>
+    <div class="container mobile-menu" id="mobileMenu"></div>
   </header>
 
   <main>
-    <!-- Hero -->
     <section class="hero container" id="home">
       <div class="hero-grid">
         <div>
           <span class="badge">Robotics • Soft Robotics • Control • Visuo‑tactile AI</span>
           <h2 class="display">DongWook Kim</h2>
-          <p class="subtitle">Assistant Professor (Incoming), <span class="muted">Robotics & Mechatronics</span>. My group studies learning‑based modeling, control, and sensing for soft and embodied robots with an emphasis on robustness and explainability.</p>
+          <p class="subtitle">Assistant Professor (Incoming), <span class="muted">DGIST Dept. Robotics and Mechatronics</span>.</p>
+	<p> My group studies learning‑based modeling, control, and sensing for soft and embodied robots with an emphasis on robustness and explainability.</p>
           <div class="cta">
-            <a class="btn" href="#publications" aria-label="Jump to publications">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              Publications
-            </a>
             <a class="btn secondary" href="https://scholar.google.com/citations?user=1omCWy0AAAAJ" target="_blank" rel="noopener">Google Scholar</a>
             <a class="btn secondary" href="https://github.com/mochacoco" target="_blank" rel="noopener">GitHub</a>
           </div>
         </div>
         <div class="hero-card">
-          <!-- You can replace with your own video or image -->
-          <video controls muted playsinline poster="hero-poster.jpg">
+          <!--<video controls muted playsinline poster="hero-poster.jpg">
             <source src="pianobattle.mp4" type="video/mp4" />
           </video>
-          <p class="muted" style="margin:8px 2px 0">Lab demo • Piano battle parody (2013)</p>
+          <p class="muted" style="margin:8px 2px 0">Lab demo • Piano battle parody (2013)</p>-->
         </div>
       </div>
     </section>
 
-    <!-- About -->
     <section id="about">
       <div class="container grid cols-2">
         <div class="card">
-          <h2 class="section-title">About</h2>
-          <p>I received my M.S. (2020) and B.S. (2018, <em>cum laude</em>) from Seoul National University. I completed my Ph.D. in the Soft Robotics and Bionics Laboratory (SRBL), advised by Prof. Yong‑Lae Park. My research focuses on probabilistic modeling, Bayesian filtering, and learning‑based control for soft robots and visuo‑tactile systems. I care about <strong>explainability</strong> and <strong>stability</strong> in ML‑for‑robotics.</p>
-          <p class="muted">Keywords: soft robotics, state estimation, system identification, MRAC, Gaussian processes, real‑time vision.</p>
+
+          <h2 class="section-title">Education & Experience</h2>
+<div class="timeline">
+  <div class="titem"><strong>2025</strong> — Postdoctoral Research Fellow, KIST</div>
+  <div class="titem"><strong>2024</strong> — Ph.D., Seoul National University (SRBL)</div>
+  <div class="titem"><strong>2020</strong> — M.S., Seoul National University</div>
+  <div class="titem"><strong>2018</strong> — B.S., Seoul National University</div>
+</div>
+
         </div>
         <div class="card">
           <h2 class="section-title">Openings</h2>
           <p>Prospective students and collaborators who are passionate about soft robotics, learning, and control are welcome. Please send a concise email with your CV, transcripts, and a short paragraph on your research interests.</p>
-          <div class="paper-actions">
-            <span class="chip">MS/PhD positions</span>
-            <span class="chip">Undergrad interns</span>
-            <span class="chip">Postdoc</span>
-          </div>
         </div>
       </div>
     </section>
 
-    <!-- Research Areas -->
     <section id="research">
       <div class="container">
         <h2 class="section-title">Research Areas</h2>
         <div class="grid cols-3">
-          <div class="card">
-            <h3>Probabilistic State Estimation</h3>
-            <p class="muted">Bayesian filtering and uncertainty‑aware sensing for compliant robots and visuo‑tactile systems.</p>
-          </div>
-          <div class="card">
-            <h3>Learning‑based Modeling & Control</h3>
-            <p class="muted">Data‑efficient identification, stability‑aware policies, and MRAC for soft actuators and continuum robots.</p>
-          </div>
-          <div class="card">
-            <h3>Real‑time Vision for Robotics</h3>
-            <p class="muted">Stereo depth, homography‑based 2.5D warping, and fast perception for surgical and lab robots.</p>
-          </div>
+          <div class="card"><h3>Probabilistic State Estimation</h3><p class="muted">Bayesian filtering and uncertainty‑aware sensing for compliant robots and visuo‑tactile systems.</p></div>
+          <div class="card"><h3>Learning‑based Modeling & Control</h3><p class="muted">Data‑efficient identification, stability‑aware policies, and MRAC for soft actuators and continuum robots.</p></div>
+          <div class="card"><h3>Real‑time Vision for Robotics</h3><p class="muted">Stereo depth, homography‑based 2.5D warping, and fast perception for surgical and lab robots.</p></div>
         </div>
       </div>
     </section>
 
-    <!-- Publications -->
     <section id="publications">
       <div class="container">
-        <h2 class="section-title">Selected Publications</h2>
-        <div class="grid cols-2">
-          <article class="card">
-            <h3>Probabilistic Modeling and Bayesian Filtering for Improved State Estimation for Soft Robots</h3>
-            <p class="muted">IEEE Transactions on Robotics, 2021</p>
-            <div class="paper-actions">
-              <a class="chip" href="https://ieeexplore.ieee.org/document/9380198" target="_blank" rel="noopener">Paper</a>
-              <a class="chip" href="#" aria-disabled="true">Code</a>
-              <a class="chip" href="#" aria-disabled="true">Video</a>
-            </div>
-            <p>Bayesian filtering that leverages actuator kinematics and sensor models to improve state estimation in soft robots.</p>
-          </article>
-          <article class="card">
-            <h3>Adaptive Calibration of Soft Sensors via OT‑based Transfer Learning for Mass Production & Long‑Term Use</h3>
-            <p class="muted">Advanced Intelligent Systems, 2020</p>
-            <div class="paper-actions">
-              <a class="chip" href="https://onlinelibrary.wiley.com/doi/full/10.1002/aisy.201900178" target="_blank" rel="noopener">Paper</a>
-              <a class="chip" href="#" aria-disabled="true">Code</a>
-            </div>
-            <p>Adaptive calibration method tackling device‑to‑device variance and signal drift in soft sensors at production scale.</p>
-          </article>
-          <!-- Add more publications as needed -->
+        <h2 class="section-title">Publications</h2>
+
+        <!-- 2025 -->
+        <div class="card">
+          <h3>2025</h3>
+          <ul>
+            <li>
+              DongWook Kim, Seunghoon Kang, Yong‑Lae Park, “Optimal Sensor Placement for Motion Tracking of Soft Wearables Using Bayesian Sampling,” <em>Soft Robotics</em>, To be included in Vol. 12, No. 5 — Online Available: <a href="https://www.liebertpub.com/doi/10.1089/soro.2024.0044" target="_blank" rel="noopener">https://www.liebertpub.com/doi/10.1089/soro.2024.0044</a>.
+            </li>
+          </ul>
         </div>
+
+        <!-- 2023 -->
+        <div class="card">
+          <h3>2023</h3>
+          <ul>
+            <li>
+              DongWook Kim, Sudong Lee, Tae Hwa Hong, Yong‑Lae Park, “Exploration‑Based Model Learning with Self‑Attention for Risk‑Sensitive Robot Control,” <em>npj Robotics</em>, Vol. 1, No. 1, 7 (15 pp.), 2023.
+            </li>
+          </ul>
+        </div>
+
+        <!-- 2022 -->
+        <div class="card">
+          <h3>2022</h3>
+          <ul>
+            <li>
+              Hyunin Lee, DongWook Kim, Yong‑Lae Park, “Explainable Deep Learning Model for EMG‑Based Finger Angle Estimation Using Attention,” <em>IEEE Transactions on Neural Systems and Rehabilitation Engineering</em>, Vol. 30, pp. 1877–1886, 2022.
+            </li>
+          </ul>
+        </div>
+
+        <!-- 2021 -->
+        <div class="card">
+          <h3>2021</h3>
+          <ul>
+            <li>
+              DongWook Kim, Myungsun Park, Yong‑Lae Park, “Probabilistic Modeling and Bayesian Filtering for Improved State Estimation for Soft Robots,” <em>IEEE Transactions on Robotics</em>, Vol. 37, No. 5, pp. 1728–1741, 2021. <span class="muted">* The contents of this paper were also selected by ICRA’22 Program Committee for presentation at the conference.</span>
+            </li>
+            <li>
+              Daekyum Kim, Sang‑Hun Kim, Taekyoung Kim, Brian Byunghyun Kang, Minhyuk Lee, Wookeun Park, Subyeong Ku, DongWook Kim, Junghan Kwon, Hochang Lee, Joonbum Bae, Yong‑Lae Park, Kyu‑Jin Cho, Sungho Jo, “Review of Machine Learning Methods in Soft Robotics,” <em>PLoS One</em>, Vol. 16, No. 2, e0246102 (24 pp.), 2021.
+            </li>
+          </ul>
+        </div>
+
+        <!-- 2020 -->
+        <div class="card">
+          <h3>2020</h3>
+          <ul>
+            <li>
+              DongWook Kim, Junghan Kwon, Byung Jun Jeon, Yong‑Lae Park, “Adaptive Calibration of Soft Sensors Using Optimal Transportation Transfer Learning for Mass Production and Long‑Term Usage,” <em>Advanced Intelligent Systems</em>, Vol. 2, No. 6, 1900178 (10 pp.), 2020.
+            </li>
+            <li>
+              Jaewoong Jung, Myungsun Park, DongWook Kim, Yong‑Lae Park, “Optically Sensorized Elastomer Air Chamber for Proprioceptive Sensing of Soft Pneumatic Actuator,” <em>IEEE Robotics and Automation Letters</em>, Vol. 5, No. 2, pp. 2333–2340, 2020. <span class="muted">* The contents of this paper were also selected by ICRA’20 Program Committee for presentation at the conference.</span>
+            </li>
+            <li>
+              Jae In Kim, Mineui Hong, Kyungjae Lee, DongWook Kim, Yong‑Lae Park, Songhwai Oh, “Learning to Walk a Tripod Mobile Robot Using Nonlinear Soft Vibration Actuators with Entropy Adaptive Reinforcement Learning,” <em>IEEE Robotics and Automation Letters</em>, Vol. 5, No. 2, pp. 2317–2324, 2020. <span class="muted">* The contents of this paper were also selected by ICRA’20 Program Committee for presentation at the conference.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 2019 -->
+        <div class="card">
+          <h3>2019</h3>
+          <ul>
+            <li>
+              Jae In Kim, DongWook Kim (co‑1st), Matthew Krebs, Young Soo Park, Yong‑Lae Park, “Force Sensitive Robotic End‑Effector Using Embedded Fiber Optics and Deep Learning Characterization for Dexterous Remote Manipulation,” <em>IEEE Robotics and Automation Letters</em>, Vol. 4, No. 4, pp. 3481–3488, 2019. <span class="muted">* The contents of this paper were also selected by IROS’19 Program Committee for presentation at the conference.</span>
+            </li>
+            <li>
+              DongWook Kim, Jae In Kim, Yong‑Lae Park, “A Simple Tripod Mobile Robot Using Soft Membrane Vibration Actuators,” <em>IEEE Robotics and Automation Letters</em>, Vol. 4, No. 3, pp. 2289–2295, 2019. <span class="muted">* The contents of this paper were also selected by ICRA’19 Program Committee for presentation at the conference.</span>
+            </li>
+            <li>
+              Se‑hun Park, Jaehyun Yi, DongWook Kim, Youngbin Lee, Sumin Koo, Yong‑Lae Park, “A Lightweight, Soft Wearable Sleeve for Rehabilitation of Forearm Pronation and Supination,” <em>Proceedings of the 2019 IEEE International Conference on Soft Robotics (RoboSoft’19)</em>, pp. 611–616, Seoul, Korea, April 2019.
+            </li>
+            <li>
+              Myungsun Park, Yunsik Ohm, DongWook Kim, Yong‑Lae Park, “Multi‑Material Soft Strain Sensors with High Gauge Factors for Proprioceptive Sensing of Soft Bending Actuators,” <em>Proceedings of the 2019 IEEE International Conference on Soft Robotics (RoboSoft’19)</em>, pp. 384–390, Seoul, Korea, April 2019.
+            </li>
+          </ul>
+        </div>
+
+        <!-- 2018 -->
+        <div class="card">
+          <h3>2018</h3>
+          <ul>
+            <li>
+              DongWook Kim, Yong‑Lae Park, “Contact Localization and Force Estimation of Soft Tactile Sensors Using Artificial Intelligence,” <em>Proceedings of the 2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS’18)</em>, pp. 7480–7485, Madrid, Spain, October 2018.
+            </li>
+          </ul>
+        </div>
+
       </div>
     </section>
 
-    <!-- News & Teaching -->
     <section id="news">
-      <div class="container grid cols-2">
+      <div class="container">
         <div class="card">
           <h2 class="section-title">News</h2>
           <div class="timeline">
-            <div class="titem"><strong>Aug 2025</strong> — Appointed as Assistant Professor in Robotics & Mechatronics.</div>
-            <div class="titem"><strong>Jul 2025</strong> — New preprint on homography‑based 2.5D real‑time view synthesis for surgical scenes.</div>
-            <div class="titem"><strong>May 2025</strong> — Paper accepted to <em>ICRA</em> Workshop on Soft Robot Sensing.</div>
-          </div>
-        </div>
-        <div class="card">
-          <h2 class="section-title">Teaching</h2>
-          <ul>
-            <li>Robotics: Modeling & Control (Graduate)</li>
-            <li>Machine Learning for Robotics (Graduate)</li>
-            <li>Mechatronics & Embedded Systems (Undergraduate)</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- Media / Gallery -->
-    <section id="media">
-      <div class="container">
-        <h2 class="section-title">Media</h2>
-        <div class="grid cols-3">
-          <div class="card"><img alt="Lab image 1" src="TRO_pic.JPG" style="width:100%; border-radius:12px" /><p class="muted" style="margin-top:8px">TRO 2021 highlight</p></div>
-          <div class="card"><img alt="Lab image 2" src="AIS_pic.jpg" style="width:100%; border-radius:12px" /><p class="muted" style="margin-top:8px">AIS 2020 feature</p></div>
-          <div class="card"><img alt="Band" src="verucca.jpg" style="width:100%; border-radius:12px" /><p class="muted" style="margin-top:8px">SNU band (2014–2017)</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact">
-      <div class="container grid cols-2">
-        <div class="card">
-          <h2 class="section-title">Contact</h2>
-          <p>Email: <a href="mailto:dongwook@example.edu">dongwook@example.edu</a></p>
-          <p>Google Scholar: <a href="https://scholar.google.com/citations?user=1omCWy0AAAAJ">/citations?user=1omCWy0AAAAJ</a></p>
-          <p>GitHub: <a href="https://github.com/mochacoco">@mochacoco</a></p>
-        </div>
-        <div class="card">
-          <h2 class="section-title">Address</h2>
-          <p>Robotics & Mechatronics Dept.<br />
-            Seoul, South Korea</p>
-          <p class="muted">(Exact address posted after move‑in)</p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap">
-      <small>© <span id="year"></span> DongWook Kim</small>
-      <div class="social">
-        <a href="https://scholar.google.com/citations?user=1omCWy0AAAAJ" aria-label="Google Scholar">Scholar</a>
-        <a href="https://github.com/mochacoco" aria-label="GitHub">GitHub</a>
-        <a href="#" aria-label="Twitter">Twitter</a>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
-    // Mobile menu
-    const btn = document.getElementById('menuBtn');
-    const menu = document.getElementById('mobileMenu');
-    btn?.addEventListener('click', ()=> menu.classList.toggle('open'));
-  </script>
-</body>
-</html>
+            <div class="titem"><strong>Aug 2025</strong> — Dr. Kim has been appointed as Assistant Professor in the Department of Robotics & Mechatronics, starting from October 2025 </div>
+            
