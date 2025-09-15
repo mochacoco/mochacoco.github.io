@@ -64,6 +64,11 @@
     .memo-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: grid; gap: 8px; }
     .memo-head { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
     .memo-sub { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; color: var(--muted); font-size: 14px; }
+
+.memo-card[draggable="true"] { cursor: grab; }
+.memo-card.dragging { opacity: .6; }
+.memo-card.drag-over { outline: 2px dashed var(--primary); }
+
     .list { display: grid; gap: 6px; }
     .ts { color: var(--muted); font-size: 12px; }
     .empty { color: var(--muted); text-align: center; padding: 18px; }
@@ -278,43 +283,92 @@
 
     // --- Render saved memos ---
     function renderSaved() {
-      // Clear existing
-      stack.querySelectorAll('.memo-card').forEach(n => n.remove());
+  // Clear existing
+  stack.querySelectorAll('.memo-card').forEach(n => n.remove());
 
-      if (state.memos.length === 0) {
-        emptyState.style.display = 'block';
-        return;
-      }
-      emptyState.style.display = 'none';
+  if (state.memos.length === 0) {
+    emptyState.style.display = 'block';
+    return;
+  }
+  emptyState.style.display = 'none';
 
-      // sort
-      let items = state.memos.slice();
-      if (state.sortMode === 'priority') {
-        items.sort((a, b) => {
-          const ap = effPriority(a), bp = effPriority(b);
-          if (bp !== ap) return bp - ap; // desc by effective priority (긴급=10)
-          const at = new Date(a.createdAt).getTime();
-          const bt = new Date(b.createdAt).getTime();
-          return bt - at; // newest first on ties
-        });
-      } else {
-        items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      }
+  // [CHANGED] sort: priority 모드에서만 정렬. time 모드는 현재 배열 순서 유지(커스텀 순서).
+  let items = state.memos;
+  if (state.sortMode === 'priority') {
+    items = state.memos.slice().sort((a, b) => {
+      const ap = effPriority(a), bp = effPriority(b);
+      if (bp !== ap) return bp - ap;
+      const at = new Date(a.createdAt).getTime();
+      const bt = new Date(b.createdAt).getTime();
+      return bt - at;
+    });
+  }
 
-      items.forEach(m => {
-        const card = document.createElement('article');
-        card.className = 'memo-card';
-        card.style.background = m.bg || DEFAULT_BG;
+  items.forEach(m => {
+    const card = document.createElement('article');
+    card.className = 'memo-card';
+    card.style.background = m.bg || DEFAULT_BG;
+    card.dataset.id = m.id;
 
-        if (state.editingId === m.id) {
-          renderEditCard(card, m);
-        } else {
-          renderReadCard(card, m);
-        }
-
-        stack.appendChild(card);
-      });
+    // [ADD] time 모드에서만 드래그 가능
+    if (state.sortMode === 'time') {
+      card.setAttribute('draggable', 'true');
+      card.addEventListener('dragstart', handleDragStart);
+      card.addEventListener('dragover', handleDragOver);
+      card.addEventListener('dragleave', handleDragLeave);
+      card.addEventListener('drop', handleDrop);
+      card.addEventListener('dragend', handleDragEnd);
     }
+
+    if (state.editingId === m.id) {
+      renderEditCard(card, m);
+    } else {
+      renderReadCard(card, m);
+    }
+    stack.appendChild(card);
+  });
+}
+
+let dragSrcId = null;
+
+function handleDragStart(e) {
+  dragSrcId = this.dataset.id;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragOver(e) {
+  e.preventDefault(); // allow drop
+  this.classList.add('drag-over');
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function handleDragLeave() {
+  this.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  this.classList.remove('drag-over');
+  const fromId = dragSrcId;
+  const toId = this.dataset.id;
+  if (!fromId || fromId === toId) return;
+
+  const fromIndex = state.memos.findIndex(m => m.id === fromId);
+  const toIndex   = state.memos.findIndex(m => m.id === toId);
+  if (fromIndex < 0 || toIndex < 0) return;
+
+  const [moved] = state.memos.splice(fromIndex, 1);
+  state.memos.splice(toIndex, 0, moved);
+  persist();
+  renderSaved();
+}
+
+function handleDragEnd() {
+  this.classList.remove('dragging');
+  stack.querySelectorAll('.memo-card').forEach(c => c.classList.remove('drag-over'));
+}
+
 
     function renderReadCard(card, m) {
       const head = document.createElement('div');
@@ -639,7 +693,9 @@
         lines
       };
 
-      state.memos.push(memo);
+
+
+      state.memos.unshift(memo);
       persist();
 
       // Reset composer (keep priority at last chosen value)
@@ -655,10 +711,10 @@
     addLineBtn.addEventListener('click', () => addLine('', false));
     saveBtn.addEventListener('click', saveMemo);
     sortBtn.addEventListener('click', () => {
-      state.sortMode = 'priority';
-      updateSortButton();
-      renderSaved();
-    });
+  state.sortMode = (state.sortMode === 'priority') ? 'time' : 'priority';
+  updateSortButton();
+  renderSaved();
+});
 
     titleInput.addEventListener('input', () => state.composer.title = titleInput.value);
     subtitleInput.addEventListener('input', () => state.composer.subtitle = subtitleInput.value);
@@ -697,4 +753,3 @@
   </script>
 </body>
 </html>
-
