@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Memo App — Advanced</title>
+  <style>
+    :root {
+      --bg: #f7f7f8;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e5e7eb;
+      --primary: #2563eb;
+      --danger: #ef4444;
+      --done: #6b7280; /* gray-600 */
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg); color: var(--text);
+      line-height: 1.5;
+      display: grid; place-items: start center;
+      min-height: 100dvh; padding: 24px;
+    }
+    .app { width: 100%; max-width: 900px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    }
+    .composer { padding: 16px; display: grid; gap: 12px; }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+    .hstack { display: flex; align-items: center; gap: 8px; }
+    .fields { display: grid; gap: 8px; }
+    .line { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; }
+
+    input[type="text"], textarea, select {
+      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); font: inherit; outline: none; background: #fff;
+    }
+    input[type="checkbox"] { width: 18px; height: 18px; }
+
+    .title-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+    .title-sub { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; }
+
+    .right { justify-self: end; margin-left: auto; }
+    .hint { color: var(--muted); font-size: 14px; }
+
+    button {
+      appearance: none; border: 1px solid var(--border); background: #fff; color: var(--text);
+      padding: 10px 14px; border-radius: 10px; font-weight: 600; cursor: pointer;
+      transition: box-shadow .15s ease, transform .02s ease;
+    }
+    button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    button.ghost { background: #fff; }
+    button.icon { width: 36px; height: 36px; border-radius: 9px; font-size: 18px; line-height: 1; }
+    button.danger { border-color: var(--danger); color: var(--danger); }
+    button.sort-on { background: var(--danger); color: #fff; border-color: var(--danger); }
+    button:active { transform: translateY(1px); }
+
+    .stack-wrap { padding: 8px 16px 0; display: grid; gap: 8px; }
+    .stack-toolbar { display: grid; grid-template-columns: 1fr auto; align-items: center; }
+    .stack { margin-top: 8px; padding: 0 0 16px; display: grid; gap: 12px; }
+
+    .memo-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: grid; gap: 8px; }
+    .memo-head { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+    .memo-sub { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; color: var(--muted); font-size: 14px; }
+    .list { display: grid; gap: 6px; }
+    .ts { color: var(--muted); font-size: 12px; }
+    .empty { color: var(--muted); text-align: center; padding: 18px; }
+    .prio { font-weight: 700; }
+
+    .btns { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+    .urgent { border-color: var(--primary); color: #fff; background: var(--primary); }
+    .urgent.active { border-color: var(--danger); background: var(--danger); }
+
+    .color-wrap { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .color-select { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); }
+
+    /* list item styles when checked */
+    .done-text { color: var(--done); text-decoration: line-through; }
+    .line-time { color: var(--muted); font-size: 12px; margin-left: 8px; }
+
+    /* Edit mode */
+    .edit-grid { display: grid; gap: 8px; }
+    .edit-lines .line { grid-template-columns: auto 1fr auto; }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <!-- Composer (Top Placeholder) -->
+    <section class="card" id="composerCard">
+      <div class="composer">
+        <!-- First row: Title    [ Save button at timestamp position ] -->
+        <div class="title-row">
+          <input id="titleInput" type="text" placeholder="(Title)" />
+          <!-- Save button occupies the [timestamp] slot in the composer -->
+          <button id="saveBtn" type="button" class="primary right" title="Save memo">Save</button>
+        </div>
+
+        <!-- Second row: (subtitle)    (priority: 1~9) -->
+        <div class="title-sub">
+          <input id="subtitleInput" type="text" placeholder="(subtitle)" />
+          <div class="hstack">
+            <label for="prioritySelect" class="hint">Priority</label>
+            <select id="prioritySelect" title="priority">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5" selected>5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Lines: (checkbox) (memo)  plus (+) to add, minus (-) to remove extra lines -->
+        <div class="fields">
+          <div id="lines"></div>
+          <div class="hstack right">
+            <button id="addLineBtn" type="button" class="icon ghost" title="Add line">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saved memos controls + stack -->
+      <div class="stack-wrap">
+        <div class="stack-toolbar">
+          <div class="hint">Archived memos</div>
+          <div class="hstack">
+            <button id="sortBtn" type="button" class="ghost" title="Sort by priority">Sort</button>
+          </div>
+        </div>
+        <div class="stack" id="memoStack">
+          <div class="empty" id="emptyState">No memos yet. Your saved memos will appear here.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // --- Persistence ---
+    const STORAGE_KEY = 'memoApp.memos.v4';
+
+    // --- Constants ---
+    const DEFAULT_BG = '#FFE4C4'; // bisque
+    const COLOR_OPTIONS = ['#FFE4C4', '#FAFAD2', '#ADFF2F', '#FFA07A', '#87CEEB'];
+
+    // --- State ---
+    const state = {
+      memos: [],
+      composer: {
+        title: '',
+        subtitle: '',
+        priority: 5,
+        lines: [] // { id, text, checked, checkedAt }
+      },
+      sortMode: 'time', // 'time' | 'priority'
+      editingId: null,  // memo.id currently being edited
+      editDraft: null   // temp draft when editing
+    };
+
+    // --- Elements ---
+    const titleInput = document.getElementById('titleInput');
+    const subtitleInput = document.getElementById('subtitleInput');
+    const prioritySelect = document.getElementById('prioritySelect');
+    const saveBtn = document.getElementById('saveBtn');
+    const addLineBtn = document.getElementById('addLineBtn');
+    const sortBtn = document.getElementById('sortBtn');
+    const linesEl = document.getElementById('lines');
+    const stack = document.getElementById('memoStack');
+    const emptyState = document.getElementById('emptyState');
+
+    // --- Utils ---
+    const nowStamp = () => new Date().toLocaleString();
+    const uid = () => Math.random().toString(36).slice(2, 10);
+    const persist = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(state.memos));
+    const load = () => {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) state.memos = JSON.parse(raw) || [];
+      } catch (_) {}
+    };
+    const effPriority = (m) => (m.urgent ? 10 : (parseInt(m.priority, 10) || 0));
+
+    function updateSortButton() {
+      if (state.sortMode === 'priority') {
+        sortBtn.classList.add('sort-on');
+      } else {
+        sortBtn.classList.remove('sort-on');
+      }
+    }
+
+    // --- Composer line management ---
+    function ensureAtLeastOneLine() {
+      if (!Array.isArray(state.composer.lines)) state.composer.lines = [];
+      if (state.composer.lines.length === 0) {
+        state.composer.lines.push({ id: uid(), text: '', checked: false, checkedAt: null });
+      }
+    }
+
+    function addLine(text = '', checked = false) {
+      state.composer.lines.push({ id: uid(), text, checked, checkedAt: null });
+      renderComposerLines();
+    }
+
+    function removeLine(id) {
+      if (state.composer.lines.length <= 1) return; // keep at least one line
+      state.composer.lines = state.composer.lines.filter(l => l.id !== id);
+      renderComposerLines();
+    }
+
+    function renderComposerLines() {
+      ensureAtLeastOneLine();
+      linesEl.innerHTML = '';
+      state.composer.lines.forEach((line) => {
+        const row = document.createElement('div');
+        row.className = 'line';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = !!line.checked;
+        cb.addEventListener('change', () => { line.checked = cb.checked; line.checkedAt = cb.checked ? nowStamp() : null; });
+        const text = document.createElement('input');
+        text.type = 'text';
+        text.placeholder = '(memo)';
+        text.value = line.text || '';
+        text.addEventListener('input', () => { line.text = text.value; });
+        const ctrls = document.createElement('div');
+        ctrls.className = 'hstack right';
+        if (state.composer.lines.length > 1) {
+          const removeBtn = document.createElement('button');
+          removeBtn.type = 'button';
+          removeBtn.className = 'icon danger';
+          removeBtn.title = 'Remove line';
+          removeBtn.textContent = '−';
+          removeBtn.addEventListener('click', () => removeLine(line.id));
+          ctrls.appendChild(removeBtn);
+        }
+        row.appendChild(cb);
+        row.appendChild(text);
+        row.appendChild(ctrls);
+        linesEl.appendChild(row);
+      });
+    }
+
+    // --- Render saved memos ---
+    function renderSaved() {
+      // Clear existing
+      stack.querySelectorAll('.memo-card').forEach(n => n.remove());
+
+      if (state.memos.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      emptyState.style.display = 'none';
+
+      // sort
+      let items = state.memos.slice();
+      if (state.sortMode === 'priority') {
+        items.sort((a, b) => {
+          const ap = effPriority(a), bp = effPriority(b);
+          if (bp !== ap) return bp - ap; // desc by effective priority (긴급=10)
+          const at = new Date(a.createdAt).getTime();
+          const bt = new Date(b.createdAt).getTime();
+          return bt - at; // newest first on ties
+        });
+      } else {
+        items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
+
+      items.forEach(m => {
+        const card = document.createElement('article');
+        card.className = 'memo-card';
+        card.style.background = m.bg || DEFAULT_BG;
+
+        if (state.editingId === m.id) {
+          renderEditCard(card, m);
+        } else {
+          renderReadCard(card, m);
+        }
+
+        stack.appendChild(card);
+      });
+    }
+
+    function renderReadCard(card, m) {
+      const head = document.createElement('div');
+      head.className = 'memo-head';
+      const title = document.createElement('div');
+      title.textContent = m.title || '(Untitled)';
+      const ts = document.createElement('div');
+      ts.className = 'ts';
+      ts.textContent = m.createdAt;
+      head.appendChild(title);
+      head.appendChild(ts);
+
+      const sub = document.createElement('div');
+      sub.className = 'memo-sub';
+      const subtitle = document.createElement('div');
+      subtitle.textContent = m.subtitle || '';
+      const prio = document.createElement('div');
+      // (2) 긴급 -> P10 always reflected, regardless of sort mode
+      const pLabel = m.urgent ? 'P10 (긴급)' : `P${m.priority}`;
+      prio.innerHTML = `<span class="prio">${pLabel}</span>`;
+      sub.appendChild(subtitle);
+      sub.appendChild(prio);
+
+      const list = document.createElement('div');
+      list.className = 'list';
+      (m.lines || []).forEach((item) => {
+        const row = document.createElement('div');
+        row.className = 'line';
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = !!item.checked;
+        // (1) live-editable checkboxes in archived cards
+        cb.addEventListener('change', () => {
+          item.checked = cb.checked;
+          item.checkedAt = cb.checked ? nowStamp() : null;
+          // Apply style & timestamp immediately
+          text.classList.toggle('done-text', !!item.checked);
+          timeEl.textContent = item.checkedAt ? item.checkedAt : '';
+          persist();
+        });
+
+        const text = document.createElement('div');
+        text.textContent = item.text || '';
+        if (item.checked) text.classList.add('done-text');
+
+        const timeEl = document.createElement('div');
+        timeEl.className = 'line-time right';
+        timeEl.textContent = item.checkedAt ? item.checkedAt : '';
+
+        row.appendChild(cb);
+        row.appendChild(text);
+        row.appendChild(timeEl);
+        list.appendChild(row);
+      });
+
+      // Color selector (always available)
+      const colorWrap = document.createElement('div');
+      colorWrap.className = 'color-wrap';
+      const colorLabel = document.createElement('span');
+      colorLabel.className = 'hint';
+      colorLabel.textContent = 'Color';
+      const colorSel = document.createElement('select');
+      colorSel.className = 'color-select';
+      COLOR_OPTIONS.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c; opt.style.background = c;
+        if ((m.bg || DEFAULT_BG) === c) opt.selected = true;
+        colorSel.appendChild(opt);
+      });
+      colorSel.addEventListener('change', () => {
+        m.bg = colorSel.value;
+        card.style.background = m.bg;
+        persist();
+      });
+      colorWrap.appendChild(colorLabel);
+      colorWrap.appendChild(colorSel);
+
+      const btns = document.createElement('div');
+      btns.className = 'btns';
+      const urgentBtn = document.createElement('button');
+      urgentBtn.type = 'button';
+      urgentBtn.className = 'urgent' + (m.urgent ? ' active' : '');
+      urgentBtn.textContent = '긴급';
+      urgentBtn.title = '긴급 토글 (blue ↔ red)';
+      urgentBtn.addEventListener('click', () => {
+        m.urgent = !m.urgent; // toggle
+        urgentBtn.classList.toggle('active', m.urgent);
+        persist();
+        // (2) Sorting by priority updates if enabled
+        if (state.sortMode === 'priority') renderSaved();
+      });
+      const modifyBtn = document.createElement('button');
+      modifyBtn.type = 'button';
+      modifyBtn.textContent = 'Modify';
+      modifyBtn.addEventListener('click', () => startEdit(m));
+
+      // header + controls
+      card.appendChild(head);
+      card.appendChild(sub);
+      card.appendChild(list);
+
+      const footer = document.createElement('div');
+      footer.className = 'hstack';
+      footer.appendChild(colorWrap);
+      const btnHolder = document.createElement('div');
+      btnHolder.className = 'btns';
+      btnHolder.appendChild(urgentBtn);
+      btnHolder.appendChild(modifyBtn);
+      footer.appendChild(btnHolder);
+      card.appendChild(footer);
+    }
+
+    function startEdit(m) {
+      state.editingId = m.id;
+      state.editDraft = JSON.parse(JSON.stringify(m));
+      renderSaved();
+    }
+
+    function cancelEdit() {
+      state.editingId = null;
+      state.editDraft = null;
+      renderSaved();
+    }
+
+    function saveEdit() {
+      if (!state.editingId || !state.editDraft) return;
+      const idx = state.memos.findIndex(mm => mm.id === state.editingId);
+      if (idx >= 0) {
+        state.memos[idx] = { ...state.memos[idx], ...state.editDraft };
+        persist();
+      }
+      cancelEdit();
+    }
+
+    function renderEditCard(card, m) {
+      const d = state.editDraft;
+      const wrap = document.createElement('div');
+      wrap.className = 'edit-grid';
+
+      // Row 1: title and timestamp (read-only timestamp)
+      const head = document.createElement('div');
+      head.className = 'memo-head';
+      const titleIn = document.createElement('input');
+      titleIn.type = 'text';
+      titleIn.value = d.title || '';
+      titleIn.placeholder = '(Title)';
+      titleIn.addEventListener('input', () => { d.title = titleIn.value; });
+      const ts = document.createElement('div');
+      ts.className = 'ts';
+      ts.textContent = m.createdAt;
+      head.appendChild(titleIn);
+      head.appendChild(ts);
+
+      // Row 2: subtitle and priority + 긴급 + color
+      const sub = document.createElement('div');
+      sub.className = 'memo-sub';
+      const subtitleIn = document.createElement('input');
+      subtitleIn.type = 'text';
+      subtitleIn.placeholder = '(subtitle)';
+      subtitleIn.value = d.subtitle || '';
+      subtitleIn.addEventListener('input', () => { d.subtitle = subtitleIn.value; });
+      const prioWrap = document.createElement('div');
+      prioWrap.className = 'hstack right';
+
+      const prioSel = document.createElement('select');
+      for (let i = 1; i <= 9; i++) {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = String(i);
+        if (parseInt(d.priority, 10) === i) opt.selected = true;
+        prioSel.appendChild(opt);
+      }
+      prioSel.addEventListener('change', () => { d.priority = parseInt(prioSel.value, 10); });
+
+      const urgentBtn = document.createElement('button');
+      urgentBtn.type = 'button';
+      urgentBtn.className = 'urgent' + (d.urgent ? ' active' : '');
+      urgentBtn.textContent = '긴급';
+      urgentBtn.addEventListener('click', () => {
+        d.urgent = !d.urgent; urgentBtn.classList.toggle('active', d.urgent);
+      });
+
+      const colorSel = document.createElement('select');
+      colorSel.className = 'color-select';
+      COLOR_OPTIONS.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c; opt.style.background = c;
+        if ((d.bg || DEFAULT_BG) === c) opt.selected = true;
+        colorSel.appendChild(opt);
+      });
+      colorSel.addEventListener('change', () => { d.bg = colorSel.value; });
+
+      prioWrap.appendChild(document.createTextNode('Priority '));
+      prioWrap.appendChild(prioSel);
+      prioWrap.appendChild(urgentBtn);
+      prioWrap.appendChild(document.createTextNode(' Color '));
+      prioWrap.appendChild(colorSel);
+
+      sub.appendChild(subtitleIn);
+      sub.appendChild(prioWrap);
+
+      // Row 3: lines (editable with add/remove)
+      const linesWrap = document.createElement('div');
+      linesWrap.className = 'edit-lines list';
+
+      function renderEditLines() {
+        linesWrap.innerHTML = '';
+        (d.lines || (d.lines = [])).forEach((line) => {
+          const row = document.createElement('div');
+          row.className = 'line';
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.checked = !!line.checked;
+          cb.addEventListener('change', () => { line.checked = cb.checked; line.checkedAt = cb.checked ? nowStamp() : null; });
+          const text = document.createElement('input');
+          text.type = 'text';
+          text.placeholder = '(memo)';
+          text.value = line.text || '';
+          text.addEventListener('input', () => { line.text = text.value; });
+          const ctrls = document.createElement('div');
+          ctrls.className = 'hstack right';
+          const rm = document.createElement('button');
+          rm.type = 'button';
+          rm.className = 'icon danger';
+          rm.textContent = '−';
+          rm.title = 'Remove line';
+          rm.addEventListener('click', () => {
+            d.lines = d.lines.filter(l => l !== line);
+            if (d.lines.length === 0) d.lines.push({ text: '', checked: false, checkedAt: null });
+            renderEditLines();
+          });
+          ctrls.appendChild(rm);
+          row.appendChild(cb);
+          row.appendChild(text);
+          row.appendChild(ctrls);
+          linesWrap.appendChild(row);
+        });
+        const add = document.createElement('div');
+        add.className = 'hstack right';
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'icon ghost';
+        addBtn.textContent = '+';
+        addBtn.title = 'Add line';
+        addBtn.addEventListener('click', () => {
+          d.lines.push({ text: '', checked: false, checkedAt: null });
+          renderEditLines();
+        });
+        add.appendChild(addBtn);
+        linesWrap.appendChild(add);
+      }
+
+      if (!Array.isArray(d.lines) || d.lines.length === 0) d.lines = [{ text: '', checked: false, checkedAt: null }];
+      renderEditLines();
+
+      const actions = document.createElement('div');
+      actions.className = 'btns';
+      const cancel = document.createElement('button');
+      cancel.type = 'button';
+      cancel.textContent = 'Cancel';
+      cancel.addEventListener('click', cancelEdit);
+      const save = document.createElement('button');
+      save.type = 'button';
+      save.className = 'primary';
+      save.textContent = 'Save changes';
+      save.addEventListener('click', saveEdit);
+      actions.appendChild(cancel);
+      actions.appendChild(save);
+
+      wrap.appendChild(head);
+      wrap.appendChild(sub);
+      wrap.appendChild(linesWrap);
+      wrap.appendChild(actions);
+      card.appendChild(wrap);
+    }
+
+    // --- Save flow for new memo ---
+    function saveMemo() {
+      const title = (titleInput.value || '').trim();
+      const subtitle = (subtitleInput.value || '').trim();
+      const priority = parseInt(prioritySelect.value, 10) || 5;
+      const lines = state.composer.lines.map(l => ({ text: (l.text || '').trim(), checked: !!l.checked, checkedAt: l.checked ? (l.checkedAt || nowStamp()) : null }));
+
+      if (!lines.length) {
+        addLine('', false);
+      }
+
+      const memo = {
+        id: uid(),
+        createdAt: nowStamp(),
+        title, subtitle, priority,
+        urgent: false,
+        bg: DEFAULT_BG,
+        lines
+      };
+
+      state.memos.push(memo);
+      persist();
+
+      // Reset composer (keep priority at last chosen value)
+      titleInput.value = '';
+      subtitleInput.value = '';
+      state.composer.lines = [{ id: uid(), text: '', checked: false, checkedAt: null }];
+      renderComposerLines();
+
+      renderSaved();
+    }
+
+    // --- Wire up ---
+    addLineBtn.addEventListener('click', () => addLine('', false));
+    saveBtn.addEventListener('click', saveMemo);
+    sortBtn.addEventListener('click', () => {
+      state.sortMode = 'priority';
+      updateSortButton();
+      renderSaved();
+    });
+
+    titleInput.addEventListener('input', () => state.composer.title = titleInput.value);
+    subtitleInput.addEventListener('input', () => state.composer.subtitle = subtitleInput.value);
+    prioritySelect.addEventListener('change', () => state.composer.priority = parseInt(prioritySelect.value, 10));
+
+    // --- Init ---
+    load();
+    updateSortButton();
+    if (!Array.isArray(state.memos)) state.memos = [];
+    ensureAtLeastOneLine();
+    renderComposerLines();
+    renderSaved();
+  </script>
+</body>
+</html>
