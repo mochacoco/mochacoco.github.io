@@ -80,9 +80,43 @@
     .done-text { color: var(--done); text-decoration: line-through; }
     .line-time { color: var(--muted); font-size: 12px; margin-left: 8px; }
 
-    /* Edit mode */
-    .edit-grid { display: grid; gap: 8px; }
-    .edit-lines .line { grid-template-columns: auto 1fr auto; }
+    /* Priority segmented control */
+    //.prio-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    //.prio-seg .seg { padding: 6px 10px; border-right: 1px solid var(--border); cursor: pointer; user-select: none; font-size: 13px; background: #fff; }
+    //.prio-seg .seg:last-child { border-right: none; }
+    //.prio-seg .seg.active { background: var(--primary); color: #fff; }
+.prio-seg {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 10px;   /* rounded outer frame */
+  overflow: hidden;
+}
+
+.prio-seg .seg {
+  padding: 6px 10px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 13px;
+  background: #fff;
+  border-right: 1px solid var(--border);
+  border-radius: 0;      /* reset rounding for all middle buttons */
+}
+
+.prio-seg .seg:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.prio-seg .seg:last-child {
+  border-right: none;    /* no divider after the last one */
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.prio-seg .seg.active {
+  background: var(--primary);
+  color: #fff;
+}
   </style>
 </head>
 <body>
@@ -101,19 +135,10 @@
         <div class="title-sub">
           <input id="subtitleInput" type="text" placeholder="(subtitle)" />
           <div class="hstack">
-            <label for="prioritySelect" class="hint">Priority</label>
-            <select id="prioritySelect" title="priority">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5" selected>5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-            </select>
+            <span class="hint">Priority</span>
+            <div id="prioritySeg" class="prio-seg"></div>
           </div>
+        </div>
         </div>
 
         <!-- Lines: (checkbox) (memo)  plus (+) to add, minus (-) to remove extra lines -->
@@ -165,7 +190,7 @@
     // --- Elements ---
     const titleInput = document.getElementById('titleInput');
     const subtitleInput = document.getElementById('subtitleInput');
-    const prioritySelect = document.getElementById('prioritySelect');
+    const prioritySegEl = document.getElementById('prioritySeg');
     const saveBtn = document.getElementById('saveBtn');
     const addLineBtn = document.getElementById('addLineBtn');
     const sortBtn = document.getElementById('sortBtn');
@@ -302,8 +327,19 @@
       subtitle.textContent = m.subtitle || '';
       const prio = document.createElement('div');
       // (2) 긴급 -> P10 always reflected, regardless of sort mode
-      const pLabel = m.urgent ? 'P10 (긴급)' : `P${m.priority}`;
-      prio.innerHTML = `<span class="prio">${pLabel}</span>`;
+
+
+
+      //const pLabel = m.urgent ? 'P10 (긴급)' : `P${m.priority}`;
+      //prio.innerHTML = `<span class="prio">${pLabel}</span>`;
+
+	renderPrioritySeg(prio, parseInt(m.priority, 10) || 5, (val) => {
+  m.priority = val;
+  persist();
+  if (state.sortMode === 'priority') renderSaved(); // reorder immediately if sorting by priority
+});
+
+
       sub.appendChild(subtitle);
       sub.appendChild(prio);
 
@@ -393,6 +429,17 @@
       btnHolder.className = 'btns';
       btnHolder.appendChild(urgentBtn);
       btnHolder.appendChild(modifyBtn);
+      // Delete button next to Modify
+      const deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.title = 'Delete this memo';
+      deleteBtn.addEventListener('click', () => {
+        state.memos = state.memos.filter(mm => mm.id !== m.id);
+        persist();
+        renderSaved();
+      });
+      btnHolder.appendChild(deleteBtn);
       footer.appendChild(btnHolder);
       card.appendChild(footer);
     }
@@ -449,15 +496,21 @@
       const prioWrap = document.createElement('div');
       prioWrap.className = 'hstack right';
 
-      const prioSel = document.createElement('select');
-      for (let i = 1; i <= 9; i++) {
-        const opt = document.createElement('option');
-        opt.value = String(i);
-        opt.textContent = String(i);
-        if (parseInt(d.priority, 10) === i) opt.selected = true;
-        prioSel.appendChild(opt);
+      // segmented priority buttons in edit mode
+      const prioSeg = document.createElement('div');
+      prioSeg.className = 'prio-seg';
+      function renderEditPrio() {
+        prioSeg.innerHTML = '';
+        for (let i = 1; i <= 9; i++) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'seg' + (i === parseInt(d.priority,10) ? ' active' : '');
+          b.textContent = String(i);
+          b.addEventListener('click', () => { d.priority = i; renderEditPrio(); });
+          prioSeg.appendChild(b);
+        }
       }
-      prioSel.addEventListener('change', () => { d.priority = parseInt(prioSel.value, 10); });
+      renderEditPrio();
 
       const urgentBtn = document.createElement('button');
       urgentBtn.type = 'button';
@@ -477,10 +530,9 @@
       });
       colorSel.addEventListener('change', () => { d.bg = colorSel.value; });
 
-      prioWrap.appendChild(document.createTextNode('Priority '));
-      prioWrap.appendChild(prioSel);
+      prioWrap.appendChild(prioSeg);
       prioWrap.appendChild(urgentBtn);
-      prioWrap.appendChild(document.createTextNode(' Color '));
+      prioWrap.appendChild(colorSel);
       prioWrap.appendChild(colorSel);
 
       sub.appendChild(subtitleIn);
@@ -565,7 +617,7 @@
     function saveMemo() {
       const title = (titleInput.value || '').trim();
       const subtitle = (subtitleInput.value || '').trim();
-      const priority = parseInt(prioritySelect.value, 10) || 5;
+      const priority = parseInt(state.composer.priority, 10) || 5;
       const lines = state.composer.lines.map(l => ({ text: (l.text || '').trim(), checked: !!l.checked, checkedAt: l.checked ? (l.checkedAt || nowStamp()) : null }));
 
       if (!lines.length) {
@@ -604,7 +656,29 @@
 
     titleInput.addEventListener('input', () => state.composer.title = titleInput.value);
     subtitleInput.addEventListener('input', () => state.composer.subtitle = subtitleInput.value);
-    prioritySelect.addEventListener('change', () => state.composer.priority = parseInt(prioritySelect.value, 10));
+
+    // --- Priority segmented control (composer) ---
+    function renderPrioritySeg(el, current, onChange) {
+      el.innerHTML = '';
+      const box = document.createElement('div');
+      box.className = 'prio-seg';
+      for (let i = 1; i <= 9; i++) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'seg' + (i === current ? ' active' : '');
+        b.textContent = String(i);
+        b.addEventListener('click', () => onChange(i));
+        box.appendChild(b);
+      }
+      el.appendChild(box);
+    }
+    function refreshComposerPriority() {
+      renderPrioritySeg(prioritySegEl, state.composer.priority, (val) => {
+        state.composer.priority = val;
+        refreshComposerPriority();
+      });
+    }
+    // priority handled by segmented control
 
     // --- Init ---
     load();
@@ -612,6 +686,7 @@
     if (!Array.isArray(state.memos)) state.memos = [];
     ensureAtLeastOneLine();
     renderComposerLines();
+    refreshComposerPriority();
     renderSaved();
   </script>
 </body>
