@@ -555,9 +555,7 @@ row.appendChild(sub);
       // Color selector (always available)
       const colorWrap = document.createElement('div');
       colorWrap.className = 'color-wrap';
-      const colorLabel = document.createElement('span');
-      colorLabel.className = 'hint';
-      colorLabel.textContent = 'Color';
+
       const colorSel = document.createElement('select');
       colorSel.className = 'color-select';
       COLOR_OPTIONS.forEach(c => {
@@ -571,7 +569,7 @@ row.appendChild(sub);
         card.style.background = m.bg;
         persist();
       });
-      colorWrap.appendChild(colorLabel);
+
       colorWrap.appendChild(colorSel);
 
       const btns = document.createElement('div');
@@ -610,11 +608,18 @@ row.appendChild(sub);
       deleteBtn.type = 'button';
       deleteBtn.textContent = 'Delete';
       deleteBtn.title = 'Delete this memo';
-      deleteBtn.addEventListener('click', () => {
-        state.memos = state.memos.filter(mm => mm.id !== m.id);
-        persist();
-        renderSaved();
-      });
+
+      deleteBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  const ok = window.confirm('삭제하시겠습니까?');
+  if (!ok) return; // 아니오(취소)면 종료
+
+  state.memos = state.memos.filter(mm => mm.id !== m.id);
+  persist();
+  renderSaved();
+});
+
       btnHolder.appendChild(deleteBtn);
       footer.appendChild(btnHolder);
       card.appendChild(footer);
