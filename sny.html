@@ -406,7 +406,7 @@ const as = maxSubPrio(a), bs = maxSubPrio(b);
     card.dataset.id = m.id;
 
     // [ADD] time 모드에서만 드래그 가능
-    if (state.sortMode === 'time') {
+    if (state.sortMode === 'time' && state.editingId !== m.id) {
       card.setAttribute('draggable', 'true');
       card.addEventListener('dragstart', handleDragStart);
       card.addEventListener('dragover', handleDragOver);
@@ -490,11 +490,12 @@ subtitle.className = 'memo-subtitle';
       //const pLabel = m.urgent ? 'P10 (긴급)' : `P${m.priority}`;
       //prio.innerHTML = `<span class="prio">${pLabel}</span>`;
 
-	renderPrioritySeg(prio, parseInt(m.priority, 10) || 5, (val) => {
+	const setPrio = (val) => {
   m.priority = val;
   persist();
-  if (state.sortMode === 'priority') renderSaved(); // reorder immediately if sorting by priority
-});
+  renderSaved(); // 둘 다 즉시 반영 (time 모드: 순서 유지, priority 모드: 재정렬)
+};
+renderPrioritySeg(prio, parseInt(m.priority, 10) || 5, setPrio);
 
 
       sub.appendChild(subtitle);
@@ -535,8 +536,7 @@ const sub = document.createElement('div'); // [ADDED] sub-priority control
   renderSubPrioSeg(sub, item.subPrio ?? 2, (val) => {
     item.subPrio = val;
     persist();
-
-if (state.sortMode === 'priority') renderSaved();
+renderSaved();
   });
 
 
