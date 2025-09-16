@@ -142,6 +142,12 @@ color: #0f172a;
 </head>
 <body>
   <main class="app">
+<div class="hstack" style="margin-bottom:12px; gap:8px;">
+  <button id="exportBtn" type="button">저장하기</button>
+  <button id="importBtn" type="button">불러오기</button>
+  <input id="importFileInput" type="file" accept="application/json" style="display:none;" />
+</div>
+
     <!-- Composer (Top Placeholder) -->
     <section class="card" id="composerCard">
       <div class="composer">
@@ -881,6 +887,53 @@ function renderSubPrioSeg(el, current, onChange) {
       });
     }
     // priority handled by segmented control
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const fileName = prompt("저장할 파일 이름을 입력하세요:", "memos-backup.json");
+  if (!fileName) return;
+
+  const dataStr = JSON.stringify(state.memos, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName.endsWith(".json") ? fileName : fileName + ".json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+});
+// Import: 불러오기
+const importFileInput = document.getElementById('importFileInput');
+
+document.getElementById('importBtn').addEventListener('click', () => {
+  importFileInput.value = ''; // 같은 파일 다시 선택해도 이벤트 뜨게
+  importFileInput.click();
+});
+
+importFileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (Array.isArray(imported)) {
+        state.memos = imported;
+        persist();
+        renderSaved();
+        alert('메모를 불러왔습니다!');
+      } else {
+        alert('잘못된 파일 형식입니다.');
+      }
+    } catch (err) {
+      alert('불러오기 실패: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+});
+
 
     // --- Init ---
     load();
