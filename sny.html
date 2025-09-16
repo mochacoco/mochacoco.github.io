@@ -23,7 +23,7 @@
       display: grid; place-items: start center;
       min-height: 100dvh; padding: 24px;
     }
-    .app { width: 100%; max-width: 900px; }
+    .app { width: 100%; }
     .card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04);
@@ -32,7 +32,7 @@
     .row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
     .hstack { display: flex; align-items: center; gap: 8px; }
     .fields { display: grid; gap: 8px; }
-    .line { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; }
+    .line { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 8px; }
 
     input[type="text"], textarea, select {
       width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); font: inherit; outline: none; background: #fff;
@@ -59,7 +59,7 @@
 
     .stack-wrap { padding: 8px 16px 0; display: grid; gap: 8px; }
     .stack-toolbar { display: grid; grid-template-columns: 1fr auto; align-items: center; }
-    .stack { margin-top: 8px; padding: 0 0 16px; display: grid; gap: 12px; }
+    .stack { margin-top: 8px; padding: 0 0 16px; display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr));}
 
     .memo-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: grid; gap: 8px; }
     .memo-head { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
@@ -122,6 +122,22 @@
   background: var(--primary);
   color: #fff;
 }
+.sub-seg .seg { font-size: 12px; padding: 4px 8px; }
+.memo-title {
+  font-size: 18px;
+
+}
+
+.memo-subtitle {
+  
+font-size: 20px;
+  font-weight: 700;
+color: #0f172a;
+}
+
+.memo-text {
+  font-size: 15px;
+}
   </style>
 </head>
 <body>
@@ -177,20 +193,35 @@
     // --- Constants ---
     const DEFAULT_BG = '#FFE4C4'; // bisque
 	const COLOR_OPTIONS = [
-	  // warm tones
-	  '#ffffff', '#f8dba0', '#f1ad9a', '#ef9ba4', '#f3b275', '#f6c54d',
-	  // green tones
-	  '#aff794', '#cfd973', '#83ad80', '#bdcda2', '#97ad6e', '#529b79',
-	  // cool tones
-	  '#7ad3c1', '#9fd9da', '#86aed8', '#adc8e6', '#4890bb', '#5b627d'
-	];
+  '#FD8A8A',
+  '#FFCBCB',
+  '#9EA1D4',
+  '#F1F7B5',
+  '#A8D1D1',
+  '#DFEBEB',
+  '#C3DCD8',
+  '#EFD1D4',
+  '#FBE8ED',
+  '#DBD9DA',
+  '#EFE1E1',
+  '#F0D2DA',
+  '#E0C1C6',
+  '#D1B4C6',
+  '#CBC4D6',
+  '#EADBDD',
+  '#FCD5CE',
+  '#FFCAD4',
+  '#FADDE1',
+  '#FFF1F5',
+  '#F6EEE9'
+];
     // --- State ---
     const state = {
       memos: [],
       composer: {
         title: '',
         subtitle: '',
-        priority: 5,
+        priority: 3,
         lines: [] // { id, text, checked, checkedAt }
       },
       sortMode: 'time', // 'time' | 'priority'
@@ -213,13 +244,59 @@
     const nowStamp = () => new Date().toLocaleString();
     const uid = () => Math.random().toString(36).slice(2, 10);
     const persist = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(state.memos));
+function clampPrio(p){ p = parseInt(p,10)||3; return Math.max(1, Math.min(5, p)); }
     const load = () => {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) state.memos = JSON.parse(raw) || [];
-      } catch (_) {}
-    };
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) state.memos = JSON.parse(raw) || [];
+    // [ADDED] migrate old data (1~9 -> 1~5, add subPrio)
+    state.memos.forEach(m => {
+      m.priority = clampPrio(m.priority);
+      (m.lines || []).forEach(l => {
+        if (l.subPrio == null) l.subPrio = 2; // default mid
+      });
+    });
+  } catch (_) {}
+};
     const effPriority = (m) => (m.urgent ? 10 : (parseInt(m.priority, 10) || 0));
+
+const subRank = (l) => {
+  // E는 내부 저장을 4로 쓴다면 그대로 parseInt만 해도 됨
+  // 혹시 문자열 'E'로 온다면 아래 한 줄만 유지하면 됨:
+  // if (l.subPrio === 'E') return 4;
+  const v = parseInt(l.subPrio, 10);
+  return Number.isFinite(v) ? v : 0;
+};
+
+function sortLinesBySubPrio(lines, original) {
+  // original: 원래 배열(타이브레이커로 처음 순서 유지)
+  const arr = (lines || []).slice();
+  arr.sort((a, b) => {
+    // 1) subpriority: 큰 값이 먼저 (E=4 > 3 > 2 > 1)
+    const sb = subRank(b) - subRank(a);
+    if (sb) return sb;
+
+    // 2) 체크 여부로도 묶고 싶으면(미체크 우선) 켜세요:
+    // if (!!a.checked !== !!b.checked) return a.checked - b.checked;
+
+    // 3) 같은 값이면 초기 입력 순서를 유지
+    return original.indexOf(a) - original.indexOf(b);
+  });
+  return arr;
+}
+
+
+
+const maxSubPrio = (m) =>
+  Math.max(
+    0,
+    ...((m.lines || []).map(l => {
+      const v = parseInt(l.subPrio, 10);
+      return Number.isFinite(v) ? v : 0; // (E는 숫자 4로 저장했다고 가정)
+    }))
+  );
+
+
 
     function updateSortButton() {
       if (state.sortMode === 'priority') {
@@ -231,16 +308,15 @@
 
     // --- Composer line management ---
     function ensureAtLeastOneLine() {
-      if (!Array.isArray(state.composer.lines)) state.composer.lines = [];
-      if (state.composer.lines.length === 0) {
-        state.composer.lines.push({ id: uid(), text: '', checked: false, checkedAt: null });
-      }
-    }
-
-    function addLine(text = '', checked = false) {
-      state.composer.lines.push({ id: uid(), text, checked, checkedAt: null });
-      renderComposerLines();
-    }
+  if (!Array.isArray(state.composer.lines)) state.composer.lines = [];
+  if (state.composer.lines.length === 0) {
+    state.composer.lines.push({ id: uid(), text: '', checked: false, checkedAt: null, subPrio: 2 }); // [CHANGED]
+  }
+}
+function addLine(text = '', checked = false) {
+  state.composer.lines.push({ id: uid(), text, checked, checkedAt: null, subPrio: 2 }); // [CHANGED]
+  renderComposerLines();
+}
 
     function removeLine(id) {
       if (state.composer.lines.length <= 1) return; // keep at least one line
@@ -249,37 +325,51 @@
     }
 
     function renderComposerLines() {
-      ensureAtLeastOneLine();
-      linesEl.innerHTML = '';
-      state.composer.lines.forEach((line) => {
-        const row = document.createElement('div');
-        row.className = 'line';
-        const cb = document.createElement('input');
-        cb.type = 'checkbox';
-        cb.checked = !!line.checked;
-        cb.addEventListener('change', () => { line.checked = cb.checked; line.checkedAt = cb.checked ? nowStamp() : null; });
-        const text = document.createElement('input');
-        text.type = 'text';
-        text.placeholder = '(memo)';
-        text.value = line.text || '';
-        text.addEventListener('input', () => { line.text = text.value; });
-        const ctrls = document.createElement('div');
-        ctrls.className = 'hstack right';
-        if (state.composer.lines.length > 1) {
-          const removeBtn = document.createElement('button');
-          removeBtn.type = 'button';
-          removeBtn.className = 'icon danger';
-          removeBtn.title = 'Remove line';
-          removeBtn.textContent = '−';
-          removeBtn.addEventListener('click', () => removeLine(line.id));
-          ctrls.appendChild(removeBtn);
-        }
-        row.appendChild(cb);
-        row.appendChild(text);
-        row.appendChild(ctrls);
-        linesEl.appendChild(row);
-      });
+  ensureAtLeastOneLine();
+  linesEl.innerHTML = '';
+  state.composer.lines.forEach((line) => {
+    const row = document.createElement('div');
+    row.className = 'line';
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = !!line.checked;
+    cb.addEventListener('change', () => { line.checked = cb.checked; line.checkedAt = cb.checked ? nowStamp() : null; });
+
+    
+
+    const text = document.createElement('input');
+    text.type = 'text';
+    text.placeholder = '(memo)';
+    text.value = line.text || '';
+    text.addEventListener('input', () => { line.text = text.value; });
+
+const sub = document.createElement('div'); // [ADDED] sub-priority control
+    renderSubPrioSeg(sub, line.subPrio ?? 2, (val) => { 
+line.subPrio = val; 
+
+});
+
+    const ctrls = document.createElement('div');
+    ctrls.className = 'hstack right';
+    if (state.composer.lines.length > 1) {
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'icon danger';
+      removeBtn.title = 'Remove line';
+      removeBtn.textContent = '−';
+      removeBtn.addEventListener('click', () => removeLine(line.id));
+      ctrls.appendChild(removeBtn);
     }
+
+    row.appendChild(cb);
+    
+    row.appendChild(text);
+row.appendChild(sub);   // [ADDED]
+    row.appendChild(ctrls);
+    linesEl.appendChild(row);
+  });
+}
 
     // --- Render saved memos ---
     function renderSaved() {
@@ -298,6 +388,11 @@
     items = state.memos.slice().sort((a, b) => {
       const ap = effPriority(a), bp = effPriority(b);
       if (bp !== ap) return bp - ap;
+
+const as = maxSubPrio(a), bs = maxSubPrio(b);
+    if (bs !== as) return bs - as;
+
+
       const at = new Date(a.createdAt).getTime();
       const bt = new Date(b.createdAt).getTime();
       return bt - at;
@@ -374,6 +469,7 @@ function handleDragEnd() {
       const head = document.createElement('div');
       head.className = 'memo-head';
       const title = document.createElement('div');
+title.className = 'memo-title';
       title.textContent = m.title || '(Untitled)';
       const ts = document.createElement('div');
       ts.className = 'ts';
@@ -384,6 +480,7 @@ function handleDragEnd() {
       const sub = document.createElement('div');
       sub.className = 'memo-sub';
       const subtitle = document.createElement('div');
+subtitle.className = 'memo-subtitle';
       subtitle.textContent = m.subtitle || '';
       const prio = document.createElement('div');
       // (2) 긴급 -> P10 always reflected, regardless of sort mode
@@ -405,7 +502,11 @@ function handleDragEnd() {
 
       const list = document.createElement('div');
       list.className = 'list';
-      (m.lines || []).forEach((item) => {
+const sorted = sortLinesBySubPrio(m.lines, m.lines);
+
+
+      sorted.forEach((item) => {
+
         const row = document.createElement('div');
         row.className = 'line';
 
@@ -422,9 +523,23 @@ function handleDragEnd() {
           persist();
         });
 
+
+
+
         const text = document.createElement('div');
+text.className = 'memo-text';
         text.textContent = item.text || '';
         if (item.checked) text.classList.add('done-text');
+
+const sub = document.createElement('div'); // [ADDED] sub-priority control
+  renderSubPrioSeg(sub, item.subPrio ?? 2, (val) => {
+    item.subPrio = val;
+    persist();
+
+if (state.sortMode === 'priority') renderSaved();
+  });
+
+
 
         const timeEl = document.createElement('div');
         timeEl.className = 'line-time right';
@@ -433,6 +548,7 @@ function handleDragEnd() {
         row.appendChild(cb);
         row.appendChild(text);
         row.appendChild(timeEl);
+row.appendChild(sub);
         list.appendChild(row);
       });
 
@@ -561,7 +677,7 @@ function handleDragEnd() {
       prioSeg.className = 'prio-seg';
       function renderEditPrio() {
         prioSeg.innerHTML = '';
-        for (let i = 1; i <= 9; i++) {
+        for (let i = 1; i <= 5; i++) {
           const b = document.createElement('button');
           b.type = 'button';
           b.className = 'seg' + (i === parseInt(d.priority,10) ? ' active' : '');
@@ -591,9 +707,7 @@ function handleDragEnd() {
       colorSel.addEventListener('change', () => { d.bg = colorSel.value; });
 
       prioWrap.appendChild(prioSeg);
-      prioWrap.appendChild(urgentBtn);
-      prioWrap.appendChild(colorSel);
-      prioWrap.appendChild(colorSel);
+
 
       sub.appendChild(subtitleIn);
       sub.appendChild(prioWrap);
@@ -616,6 +730,8 @@ function handleDragEnd() {
           text.placeholder = '(memo)';
           text.value = line.text || '';
           text.addEventListener('input', () => { line.text = text.value; });
+const sub = document.createElement('div'); // [ADDED]
+renderSubPrioSeg(sub, line.subPrio ?? 2, (val) => { line.subPrio = val; });
           const ctrls = document.createElement('div');
           ctrls.className = 'hstack right';
           const rm = document.createElement('button');
@@ -630,7 +746,9 @@ function handleDragEnd() {
           });
           ctrls.appendChild(rm);
           row.appendChild(cb);
+
           row.appendChild(text);
+
           row.appendChild(ctrls);
           linesWrap.appendChild(row);
         });
@@ -674,38 +792,38 @@ function handleDragEnd() {
     }
 
     // --- Save flow for new memo ---
-    function saveMemo() {
-      const title = (titleInput.value || '').trim();
-      const subtitle = (subtitleInput.value || '').trim();
-      const priority = parseInt(state.composer.priority, 10) || 5;
-      const lines = state.composer.lines.map(l => ({ text: (l.text || '').trim(), checked: !!l.checked, checkedAt: l.checked ? (l.checkedAt || nowStamp()) : null }));
+function saveMemo() {
+  const title = (titleInput.value || '').trim();
+  const subtitle = (subtitleInput.value || '').trim();
+  const priority = parseInt(state.composer.priority, 10) || 3; // [CHANGED] default 3
+  const lines = state.composer.lines.map(l => ({
+    text: (l.text || '').trim(),
+    checked: !!l.checked,
+    checkedAt: l.checked ? (l.checkedAt || nowStamp()) : null,
+    subPrio: (l.subPrio == null ? 2 : l.subPrio) // [ADDED]
+  }));
 
-      if (!lines.length) {
-        addLine('', false);
-      }
+  if (!lines.length) addLine('', false);
 
-      const memo = {
-        id: uid(),
-        createdAt: nowStamp(),
-        title, subtitle, priority,
-        urgent: false,
-        bg: DEFAULT_BG,
-        lines
-      };
+  const memo = {
+    id: uid(),
+    createdAt: nowStamp(),
+    title, subtitle, priority,
+    urgent: false,
+    bg: DEFAULT_BG,
+    lines
+  };
 
+  state.memos.unshift(memo);
+  persist();
 
-
-      state.memos.unshift(memo);
-      persist();
-
-      // Reset composer (keep priority at last chosen value)
-      titleInput.value = '';
-      subtitleInput.value = '';
-      state.composer.lines = [{ id: uid(), text: '', checked: false, checkedAt: null }];
-      renderComposerLines();
-
-      renderSaved();
-    }
+  // reset
+  titleInput.value = '';
+  subtitleInput.value = '';
+  state.composer.lines = [{ id: uid(), text: '', checked: false, checkedAt: null, subPrio: 2 }]; // [CHANGED]
+  renderComposerLines();
+  renderSaved();
+}
 
     // --- Wire up ---
     addLineBtn.addEventListener('click', () => addLine('', false));
@@ -724,7 +842,7 @@ function handleDragEnd() {
       el.innerHTML = '';
       const box = document.createElement('div');
       box.className = 'prio-seg';
-      for (let i = 1; i <= 9; i++) {
+      for (let i = 1; i <= 5; i++) {
         const b = document.createElement('button');
         b.type = 'button';
         b.className = 'seg' + (i === current ? ' active' : '');
@@ -734,6 +852,23 @@ function handleDragEnd() {
       }
       el.appendChild(box);
     }
+
+function renderSubPrioSeg(el, current, onChange) {
+  el.innerHTML = '';
+  const box = document.createElement('div');
+  box.className = 'prio-seg sub-seg';
+  const opts = [1,2,3,4]; // 4 == E
+  opts.forEach(v => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'seg' + (v === (parseInt(current,10)||2) ? ' active' : '');
+    b.textContent = (v === 4) ? 'E' : String(v);
+    b.addEventListener('click', () => onChange(v));
+    box.appendChild(b);
+  });
+  el.appendChild(box);
+}
+
     function refreshComposerPriority() {
       renderPrioritySeg(prioritySegEl, state.composer.priority, (val) => {
         state.composer.priority = val;
