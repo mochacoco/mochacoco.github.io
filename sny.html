@@ -138,6 +138,82 @@ color: #0f172a;
 .memo-text {
   font-size: 15px;
 }
+
+.layout {
+  display: grid;
+  grid-template-columns: 3fr 1fr; /* 왼쪽 75%, 오른쪽 25% */
+  gap: 16px;
+  width: 100%;
+  min-height: 100dvh;
+}
+
+/* 왼쪽 메모 3열 그리드 (이미 3열이라면 유지) */
+#mainCol .stack {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: start;
+}
+
+/* 오른쪽 S 패널 */
+#sPanel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100dvh - 24px);
+  position: sticky; top: 12px; /* 스크롤 시 고정 */
+  overflow: hidden;
+}
+
+.panel-head {
+  font-weight: 700;
+  font-size: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-list {
+  overflow: auto;
+  display: grid;
+  gap: 8px;
+}
+
+/* S 항목 줄 레이아웃 */
+.sline {
+  display: grid;
+  grid-template-columns: auto auto 1fr; /* 체크박스 | 배지 | 텍스트 */
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.sline .badge {
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  padding: 0 8px;
+  line-height: 20px;
+}
+
+.sline .s-text {
+  font-size: 14px;
+}
+
+.sline .s-meta {
+  grid-column: 1 / -1; /* 다음 줄에 메모 타이틀 */
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: 26px; /* 체크박스+배지 폭만큼 들여쓰기 */
+}
+
   </style>
 </head>
 <body>
@@ -153,16 +229,16 @@ color: #0f172a;
       <div class="composer">
         <!-- First row: Title    [ Save button at timestamp position ] -->
         <div class="title-row">
-          <input id="titleInput" type="text" placeholder="(Title)" />
+          <input id="titleInput" type="text" placeholder="(제목)" />
           <!-- Save button occupies the [timestamp] slot in the composer -->
           <button id="saveBtn" type="button" class="primary right" title="Save memo">Save</button>
         </div>
 
         <!-- Second row: (subtitle)    (priority: 1~9) -->
         <div class="title-sub">
-          <input id="subtitleInput" type="text" placeholder="(subtitle)" />
+          <input id="subtitleInput" type="text" placeholder="(소제목)" />
           <div class="hstack">
-            <span class="hint">Priority</span>
+            <span class="hint">중요도</span>
             <div id="prioritySeg" class="prio-seg"></div>
           </div>
         </div>
@@ -185,10 +261,23 @@ color: #0f172a;
             <button id="sortBtn" type="button" class="ghost" title="Sort by priority">Sort</button>
           </div>
         </div>
-        <div class="stack" id="memoStack">
-          <div class="empty" id="emptyState">No memos yet. Your saved memos will appear here.</div>
+
+
+        <div class="layout">
+    <section id="mainCol">
+      <div class="stack" id="memoStack">
+        <div class="empty" id="emptyState">No memos yet. Your saved memos will appear here.</div>
+      </div>
+    </section>
+
+    <aside id="sPanel">
+      <div class="panel-head">샘플링 모아보기</div>
+      <div id="sList" class="panel-list"></div>
+    </aside>
         </div>
       </div>
+
+
     </section>
   </main>
 
@@ -259,7 +348,8 @@ function clampPrio(p){ p = parseInt(p,10)||3; return Math.max(1, Math.min(5, p))
     state.memos.forEach(m => {
       m.priority = clampPrio(m.priority);
       (m.lines || []).forEach(l => {
-        if (l.subPrio == null) l.subPrio = 2; // default mid
+        if (l.subPrio === 4) l.subPrio = 5; // 기존 E를 5로 보정
+    	if (l.subPrio == null) l.subPrio = 2; // 기본값 여전히 2
       });
     });
   } catch (_) {}
@@ -428,6 +518,8 @@ const as = maxSubPrio(a), bs = maxSubPrio(b);
     }
     stack.appendChild(card);
   });
+
+renderSPanel();
 }
 
 let dragSrcId = null;
@@ -868,12 +960,12 @@ function renderSubPrioSeg(el, current, onChange) {
   el.innerHTML = '';
   const box = document.createElement('div');
   box.className = 'prio-seg sub-seg';
-  const opts = [1,2,3,4]; // 4 == E
+  const opts = [1,2,3,4, 5]; // 4 == S, 5 == E
   opts.forEach(v => {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'seg' + (v === (parseInt(current,10)||2) ? ' active' : '');
-    b.textContent = (v === 4) ? 'E' : String(v);
+    b.textContent = (v === 4) ? 'S' : (v === 5 ? 'E' : String(v));
     b.addEventListener('click', () => onChange(v));
     box.appendChild(b);
   });
@@ -943,6 +1035,76 @@ importFileInput.addEventListener('change', (e) => {
     renderComposerLines();
     refreshComposerPriority();
     renderSaved();
+
+// S 패널: subPrio === 4(S) 인 항목만 수집하여 보여주기 (체크된 건 제외)
+function renderSPanel() {
+  const listEl = document.getElementById('sList');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+
+  // 모든 메모에서 S 항목 수집
+  const sItems = [];
+  state.memos.forEach(m => {
+    (m.lines || []).forEach((l) => {
+      const v = parseInt(l.subPrio, 10) || 0; // S=4, E=5 기준
+      if (v === 4 && !l.checked) {
+        sItems.push({ m, l });
+      }
+    });
+  });
+
+  // 우선순위 높은 메모 먼저 (동률이면 최신 메모 먼저)
+  sItems.sort((a, b) => {
+    const ap = parseInt(a.m.priority, 10) || 0;
+    const bp = parseInt(b.m.priority, 10) || 0;
+    if (bp !== ap) return bp - ap;
+    const at = new Date(a.m.createdAt || 0).getTime();
+    const bt = new Date(b.m.createdAt || 0).getTime();
+    return bt - at;
+  });
+
+  if (!sItems.length) {
+    const empty = document.createElement('div');
+    empty.className = 'muted';
+    empty.textContent = '샘플링 목록 비어있음';
+    listEl.appendChild(empty);
+    return;
+  }
+
+  sItems.forEach(({ m, l }) => {
+    const row = document.createElement('div');
+    row.className = 'sline';
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = !!l.checked;
+    cb.addEventListener('change', () => {
+      l.checked = cb.checked;
+      l.checkedAt = cb.checked ? nowStamp() : null;
+      persist();        // 로컬+클라우드 반영
+      renderSaved();    // 메인/패널 동시 갱신
+    });
+
+    const badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.textContent = 'S';
+
+    const text = document.createElement('div');
+    text.className = 's-text';
+    text.textContent = l.text || '';
+
+    const meta = document.createElement('div');
+    meta.className = 's-meta';
+    meta.textContent = m.title || '(Untitled)';
+
+    row.appendChild(cb);
+
+    row.appendChild(text);
+    row.appendChild(meta);
+    listEl.appendChild(row);
+  });
+}
+
   </script>
 </body>
 </html>
