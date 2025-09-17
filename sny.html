@@ -214,6 +214,70 @@ color: #0f172a;
   margin-left: 26px; /* 체크박스+배지 폭만큼 들여쓰기 */
 }
 
+/* 드롭다운 메뉴 기본 */
+.menu {
+  position: absolute;
+  top: 32px; right: 8px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  padding: 6px;
+  min-width: 160px;
+  display: none;
+  z-index: 30;
+}
+.menu.open { display: block; }
+.menu button {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.menu button:hover { background: #f5f5f5; }
+
+/* 서브메뉴(오른쪽으로 펼침) */
+.submenu {
+  position: absolute;
+  top: 0; left: calc(100% + 6px);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  padding: 8px;
+  min-width: 180px;
+  display: none;
+  z-index: 40;
+}
+.submenu.open { display: block; }
+
+/* 색상 칩 그리드 */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 24px);
+  gap: 8px;
+}
+.swatch {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,.12);
+  cursor: pointer;
+}
+.swatch:focus { outline: 2px solid rgba(0,0,0,.25); outline-offset: 2px; }
+
+/* 우상단 버튼/타임스탬프 겹침 방지(이전 패치 유지 권장) */
+.memo-card { position: relative; overflow: visible; }
+.memo-head { position: relative; padding-right: 64px; }
+.memo-head .ts { position: absolute; top: 8px; right: 36px; }
+.kebab { position:absolute; top:8px; right:8px; background:transparent; border:0; padding:4px 6px; font-size:18px; color:var(--muted); z-index:20; }
+.kebab:hover{ color:var(--text); }
+
+.color-wrap { display: none; }
+
   </style>
 </head>
 <body>
@@ -256,7 +320,7 @@ color: #0f172a;
       <!-- Saved memos controls + stack -->
       <div class="stack-wrap">
         <div class="stack-toolbar">
-          <div class="hint">Archived memos</div>
+          <div class="hint">메모</div>
           <div class="hstack">
             <button id="sortBtn" type="button" class="ghost" title="Sort by priority">Sort</button>
           </div>
@@ -575,6 +639,89 @@ title.className = 'memo-title';
       head.appendChild(title);
       head.appendChild(ts);
 
+card.appendChild(head);
+card.classList.add('memo-card'); // position 기준(중복 무해)
+
+  // ⋮ 버튼
+  const kebab = document.createElement('button');
+  kebab.type = 'button';
+  kebab.className = 'kebab';
+  kebab.textContent = '⋮';
+
+  // 메인 메뉴
+  const menu = document.createElement('div');
+  menu.className = 'menu';
+
+  // "색 변경하기 ▸" 항목
+  const colorMenuBtn = document.createElement('button');
+  colorMenuBtn.type = 'button';
+  colorMenuBtn.className = 'submenu-toggle';
+  colorMenuBtn.textContent = '색 변경하기 ▸';
+
+  // 서브메뉴(컬러칩)
+  const subMenu = document.createElement('div');
+  subMenu.className = 'submenu';
+
+  const grid = document.createElement('div');
+  grid.className = 'swatch-grid';
+  (COLOR_OPTIONS || []).forEach(c => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'swatch';
+    b.style.background = c;
+    b.title = c;
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      m.bg = c;
+      card.style.background = c;
+      persist();
+      subMenu.classList.remove('open');
+      menu.classList.remove('open');
+    });
+    grid.appendChild(b);
+  });
+  subMenu.appendChild(grid);
+
+  colorMenuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // 다른 서브메뉴 닫기
+    document.querySelectorAll('.submenu.open').forEach(el => el.classList.remove('open'));
+    subMenu.classList.toggle('open');
+  });
+
+  menu.appendChild(colorMenuBtn);
+  menu.appendChild(subMenu);
+
+const deleteMenuBtn = document.createElement('button');
+deleteMenuBtn.type = 'button';
+deleteMenuBtn.textContent = '삭제';
+deleteMenuBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!confirm('삭제하시겠습니까?')) return;
+  state.memos = state.memos.filter(mm => mm.id !== m.id);
+  persist();
+  renderSaved();
+});
+menu.appendChild(deleteMenuBtn);
+
+
+  kebab.addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.querySelectorAll('.menu.open').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.submenu.open').forEach(el => el.classList.remove('open'));
+    menu.classList.toggle('open');
+  });
+
+  // 카드에 부착 (헤더 다음)
+  card.appendChild(kebab);
+  card.appendChild(menu);
+
+  // 바깥 클릭 시 닫기 (중복 리스너 방지하려면 상위에서 once로 관리해도 OK)
+  document.addEventListener('click', () => {
+    menu.classList.remove('open');
+    subMenu.classList.remove('open');
+  });
+
       const sub = document.createElement('div');
       sub.className = 'memo-sub';
       const subtitle = document.createElement('div');
@@ -684,9 +831,10 @@ row.appendChild(sub);
         // (2) Sorting by priority updates if enabled
         if (state.sortMode === 'priority') renderSaved();
       });
+
       const modifyBtn = document.createElement('button');
       modifyBtn.type = 'button';
-      modifyBtn.textContent = 'Modify';
+      modifyBtn.textContent = '수정';
       modifyBtn.addEventListener('click', () => startEdit(m));
 
       // header + controls
@@ -701,6 +849,7 @@ row.appendChild(sub);
       btnHolder.className = 'btns';
       btnHolder.appendChild(urgentBtn);
       btnHolder.appendChild(modifyBtn);
+
       // Delete button next to Modify
       const deleteBtn = document.createElement('button');
       deleteBtn.type = 'button';
@@ -718,7 +867,7 @@ row.appendChild(sub);
   renderSaved();
 });
 
-      btnHolder.appendChild(deleteBtn);
+      //btnHolder.appendChild(deleteBtn);
       footer.appendChild(btnHolder);
       card.appendChild(footer);
     }
@@ -763,6 +912,10 @@ row.appendChild(sub);
       ts.textContent = m.createdAt;
       head.appendChild(titleIn);
       head.appendChild(ts);
+
+
+
+
 
       // Row 2: subtitle and priority + 긴급 + color
       const sub = document.createElement('div');
