@@ -348,7 +348,6 @@ function clampPrio(p){ p = parseInt(p,10)||3; return Math.max(1, Math.min(5, p))
     state.memos.forEach(m => {
       m.priority = clampPrio(m.priority);
       (m.lines || []).forEach(l => {
-        if (l.subPrio === 4) l.subPrio = 5; // 기존 E를 5로 보정
     	if (l.subPrio == null) l.subPrio = 2; // 기본값 여전히 2
       });
     });
@@ -443,6 +442,7 @@ function addLine(text = '', checked = false) {
 const sub = document.createElement('div'); // [ADDED] sub-priority control
     renderSubPrioSeg(sub, line.subPrio ?? 2, (val) => { 
 line.subPrio = val; 
+renderComposerLines();
 
 });
 
