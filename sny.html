@@ -137,6 +137,8 @@ color: #0f172a;
 
 .memo-text {
   font-size: 15px;
+white-space: pre-wrap !important;
+  word-break: break-word;
 }
 
 .layout {
@@ -277,6 +279,28 @@ color: #0f172a;
 .kebab:hover{ color:var(--text); }
 
 .color-wrap { display: none; }
+
+.line textarea.memo-edit {
+  width: 100%;
+  min-height: 28px;
+  resize: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+
+
+
+
+/* S 패널에서도 여러 줄 보이게 하고 싶다면 */
+.s-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 
   </style>
 </head>
@@ -981,11 +1005,57 @@ row.appendChild(sub);
           cb.type = 'checkbox';
           cb.checked = !!line.checked;
           cb.addEventListener('change', () => { line.checked = cb.checked; line.checkedAt = cb.checked ? nowStamp() : null; });
-          const text = document.createElement('input');
-          text.type = 'text';
-          text.placeholder = '(memo)';
-          text.value = line.text || '';
-          text.addEventListener('input', () => { line.text = text.value; });
+
+
+          const text = document.createElement('textarea');
+text.className = 'memo-edit';
+text.placeholder = '(memo)';
+text.value = line.text || '';
+
+// 자동 높이
+const autoResize = () => {
+  text.style.height = 'auto';
+  text.style.height = text.scrollHeight + 'px';
+};
+autoResize();
+
+text.addEventListener('input', () => {
+  line.text = text.value;
+  autoResize();
+});
+
+// Enter 동작:
+// - Shift+Enter: 줄바꿈 허용
+// - Enter(단독): 기본 줄바꿈 막고 다음 항목으로 포커스 (마지막이면 새 항목 추가 후 이동)
+text.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+
+  if (e.shiftKey) {
+    // 줄바꿈 허용(기본 동작 유지)
+    // 높이 재계산만 살짝 지연
+    setTimeout(autoResize, 0);
+    return;
+  }
+
+  // Enter 단독: 줄바꿈 대신 이동/추가
+  e.preventDefault();
+
+  // 현재 라인의 인덱스
+  const idx = d.lines.indexOf(line);
+
+  if (idx < d.lines.length - 1) {
+    // 다음 라인으로 포커스
+    focusEditLine(idx + 1);
+  } else {
+    // 마지막이면 새 라인 추가 후 포커스
+    const newLine = { id: uid(), text: '', checked: false, checkedAt: null, subPrio: 2 };
+    d.lines.push(newLine);
+    renderEditLines();                 // 리스트 다시 그림
+    focusEditLine(d.lines.length - 1); // 새 라인으로 포커스
+  }
+});
+
+
 const sub = document.createElement('div'); // [ADDED]
 renderSubPrioSeg(sub, line.subPrio ?? 2, (val) => { line.subPrio = val; });
           const ctrls = document.createElement('div');
@@ -1257,7 +1327,15 @@ function renderSPanel() {
     listEl.appendChild(row);
   });
 }
-
+function focusEditLine(index) {
+  const nodes = document.querySelectorAll('.line textarea.memo-edit');
+  const el = nodes[index];
+  if (el) {
+    el.focus();
+    const len = el.value.length;
+    el.setSelectionRange(len, len); // 커서를 끝으로
+  }
+}
   </script>
 </body>
 </html>
