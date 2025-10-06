@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apply | PI-RP Lab</title>
+  <style>
+    body {
+      font-family: "Noto Sans KR", sans-serif;
+      line-height: 1.7;
+      color: #1e1e1e;
+      background-color: #fafafa;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #111827;
+      color: #ffffff;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      color: #111827;
+    }
+    h2 {
+      margin-top: 2rem;
+      color: #374151;
+    }
+    p {
+      margin-bottom: 1rem;
+    }
+    ul {
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      padding-left: 1.2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin: 3rem 0 1rem;
+    }
+    a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Apply to PI-RP Lab</h1>
+  </header>
+  <main>
+    <p>
+      연구실에서 주로 수행하는 연구는 인공지능을 단순히 로봇 모델링 및 제어에 적용하는 수준을 넘어, 
+      이론적인 기반에서 보다 깊이 있는 연구를 통해 <strong>“실제로 사용할 수 있는 일반성”</strong> 확보를 목표로 합니다.
+    </p>
+
+    <p>특히 다음 세 가지 주제를 중심으로 연구를 진행합니다:</p>
+    <ul>
+      <li>(1) 극한으로 적은 dataset만이 확보된 상황에서의 동작</li>
+      <li>(2) physics 또는 기구학적 요소를 반영한 grey-box modeling</li>
+      <li>(3) 확률론적 요소를 반영한 risk-aware 및 robustness 확보</li>
+    </ul>
+
+    <p>
+      이러한 접근을 통해 robot modeling, sensing, 그리고 control 알고리즘을 연구하며,
+      주로 다루는 시스템은 비정형 환경에서 작동하는 <strong>soft robotics</strong> 및 <strong>medical robot</strong>입니다.
+      검증된 후에는 일반적인 다른 로봇 시스템으로의 확장도 진행됩니다.
+    </p>
+
+    <p>
+      실용성과 일반화를 목표로 하기 때문에 <strong>simulation 중심의 연구는 지양</strong>하며,
+      단순히 dataset을 모아 학습시키는 연구 또한 지향하지 않습니다.
+    </p>
+
+    <p>다음과 같은 분야에 관심이 있다면 연구실의 방향성과 잘 맞을 것입니다:</p>
+    <ul>
+      <li>로봇 추정 및 제어 이론에서의 확률론적, 기하학적 접근</li>
+      <li>Bayesian neural network, few-shot learning</li>
+    </ul>
+
+    <p>
+      Application 단계에서는 hardware design부터 이러한 요소를 고려한 설계를 수행합니다.
+      따라서 기초적인 설계 기술을 보유하고 있다면 연구에 큰 도움이 됩니다.
+    </p>
+
+    <h2>How to Apply</h2>
+    <p>
+      간단한 <strong>CV</strong>, <strong>성적표</strong>, 그리고 위 내용과 관련된
+      <strong>research interest</strong>를 작성하여 아래 주소로 이메일을 보내주세요:
+    </p>
+    <p style="margin-left:1rem;">
+       <strong>dw_kim (at) dgist (dot) ac (dot) kr</strong>
+    </p>
+    <p>
+      서류 검토 후 면담 일정을 회신드리며, <br />
+      일주일 이상 답장이 없을 경우 정중한 거절의 의미로 이해해주시면 감사하겠습니다.
+    </p>
+  </main>
+
+  <footer>
+    © 2025 PIRoL  </footer>
+</body>
+</html>
