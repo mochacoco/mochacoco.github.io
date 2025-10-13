@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Research | PIRoL</title>
   <style>
     body {
-      font-family: "Noto Sans KR", sans-serif;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       line-height: 1.7;
       color: #1e1e1e;
       background-color: #fafafa;
@@ -37,11 +37,6 @@
       margin: 2rem 0 0.25rem;
       color: #374151;
       font-size: 1.35rem;
-    }
-    h3 {
-      margin: 1.5rem 0 0.25rem;
-      color: #374151;
-      font-size: 1.1rem;
     }
     p {
       margin: 0.5rem 0 1rem;
@@ -76,11 +71,6 @@
       padding: 8px 10px 10px;
       min-height: 2.2em;
     }
-    .note {
-      font-size: 0.95rem;
-      color: #6b7280;
-      margin-top: 0.25rem;
-    }
     footer {
       text-align: center;
       font-size: 0.9rem;
@@ -94,7 +84,6 @@
     a:hover {
       text-decoration: underline;
     }
-    /* 반응형 */
     @media (max-width: 900px) {
       main { padding: 1.25rem; }
       .gallery { grid-template-columns: 1fr 1fr; }
@@ -113,33 +102,36 @@
 
   <main>
     <p>
-      Physical Intelligent Robotics Laboratory(PIRoL)은 <strong>실사용 가능한 일반성</strong>을 목표로, 
-      <strong>로봇 추정·제어</strong>, <strong>통계적 데이터 기반 모델링</strong>, 그리고 
-      <strong>물리 지능을 내장한 하드웨어 설계</strong>를 통합적으로 연구합니다.
+      The <strong>Physical Intelligent Robotics Laboratory (PIRoL)</strong> aims to achieve 
+      <strong>generalizable and deployable intelligence</strong> for real-world robotics by integrating 
+      probabilistic estimation, data-driven modeling, and physically intelligent hardware design.
     </p>
-    <p class="note">아래 각 연구 주제는 대표 이미지(연구 사진, 프로토타입, 결과 그래프 등)와 간단 설명으로 구성되어 있습니다.</p>
+    <p>
+      Our studies focus on three complementary research directions described below.
+    </p>
 
     <!-- (1) AI-Based Estimation and Control -->
     <section class="area" id="ai-estimation-control">
       <h2>(1) AI-Based Estimation and Control</h2>
       <p>
-        확률적 추정 이론과 학습기반 제어를 결합하여, 노이즈가 크거나 데이터가 제한된 환경에서도 
-        <strong>강건한 상태 추정</strong>과 <strong>리스크 인지 제어</strong>가 가능하도록 연구합니다. 
-        필터링/스무딩, 불확실성 전파, 안전 제어(MRAC, 검증 가능한 정책) 등을 실제 시스템에 적용합니다.
+        This research area explores robust state estimation and risk-aware control under uncertainty. 
+        We integrate <strong>probabilistic filtering</strong>, <strong>Bayesian learning</strong>, and 
+        <strong>adaptive control</strong> to enable robots to operate reliably even with limited or noisy data. 
+        Our methods emphasize explainability and real-time performance through Bayesian inference and safe model-based reinforcement learning.
       </p>
 
       <div class="gallery">
         <figure>
-          <img src="research1.jpg" alt="Learning-based state estimation and filtering on a soft robot testbed" loading="lazy">
-          <figcaption>Soft robot 테스트베드에서의 학습기반 상태추정</figcaption>
+          <img src="research1.jpg" alt="Learning-based state estimation on soft robotic systems" loading="lazy">
+          <figcaption>Learning-based state estimation on soft robotic systems</figcaption>
         </figure>
         <figure>
-          <img src="research2.jpg" alt="Risk-aware controller experiments with real-time constraints" loading="lazy">
-          <figcaption>리스크 인지 제어기의 실시간 실험</figcaption>
+          <img src="research2.jpg" alt="Risk-aware control with real-time constraints" loading="lazy">
+          <figcaption>Risk-aware control under uncertainty and real-time constraints</figcaption>
         </figure>
         <figure>
-          <img src="research3.jpg" alt="Bayesian policy evaluation and deployment on a physical platform" loading="lazy">
-          <figcaption>Bayesian 정책의 물리 플랫폼 실험</figcaption>
+          <img src="research3.jpg" alt="Bayesian policy deployment on physical platforms" loading="lazy">
+          <figcaption>Bayesian policy deployment on physical robotic platforms</figcaption>
         </figure>
       </div>
     </section>
@@ -148,20 +140,21 @@
     <section class="area" id="statistical-modeling">
       <h2>(2) Statistical Data-Driven Modeling</h2>
       <p>
-        극히 제한된 샘플에서도 일반화가 가능한 <strong>통계적 모델</strong>을 설계하고, 
-        <strong>grey-box</strong> 구조로 물리/기구학적 지식을 내재화합니다. 
-        Gaussian Process, Bayesian Neural Network, Few-shot/Meta-learning을 활용해 
-        불확실성 정량화와 해석 가능성을 동시에 추구합니다.
+        We investigate <strong>statistical and interpretable models</strong> that generalize from extremely limited datasets. 
+        Our work combines physics-informed priors with data-driven structures (so-called <em>grey-box modeling</em>) 
+        using techniques such as <strong>Gaussian Process Regression (GPR)</strong>, 
+        <strong>Bayesian Neural Networks</strong>, and <strong>meta-learning</strong>. 
+        These approaches provide calibrated uncertainty estimation and improve the reliability of robot learning in uncertain environments.
       </p>
 
       <div class="gallery">
         <figure>
           <img src="research4.jpg" alt="Gaussian process regression capturing nonlinearity and uncertainty" loading="lazy">
-          <figcaption>비선형성·불확실성을 포착하는 GPR 결과</figcaption>
+          <figcaption>GPR capturing nonlinearities and quantified uncertainty</figcaption>
         </figure>
         <figure>
-          <img src="research5.jpg" alt="Hybrid grey-box model combining physics priors and data" loading="lazy">
-          <figcaption>물리 Priors와 데이터를 융합한 Grey-box 모델</figcaption>
+          <img src="research5.jpg" alt="Hybrid grey-box model combining physics priors and data-driven structures" loading="lazy">
+          <figcaption>Hybrid grey-box model combining physics priors and data-driven structures</figcaption>
         </figure>
       </div>
     </section>
@@ -170,17 +163,17 @@
     <section class="area" id="physically-intelligent-hardware">
       <h2>(3) Physically Intelligent Hardware</h2>
       <p>
-        하드웨어 단계에서부터 <strong>물리적·체화 지능(Physical/Embodied Intelligence)</strong>을 설계하여 
-        제어 부담을 줄이고 시스템 전체의 <strong>안정성·효율성</strong>을 높입니다. 
-        센서 배치 최적화, 기구 설계, 소재/구조 설계를 통해 학습·제어와 자연스럽게 맞물리는 플랫폼을 구현합니다.
+        This area focuses on embedding intelligence into the physical design of robotic systems. 
+        We develop <strong>hardware architectures</strong> with built-in sensing, actuation, and compliance to minimize control complexity 
+        and improve adaptability. Through optimal sensor placement, morphology optimization, and material design, 
+        we aim to create systems that express <strong>embodied and physical intelligence</strong> by design.
       </p>
 
       <div class="gallery">
         <figure>
-          <img src="research6.jpg" alt="Physically intelligent soft actuator with embedded sensing" loading="lazy">
-          <figcaption>임베디드 센싱을 갖춘 물리 지능형 액추에이터</figcaption>
+          <img src="research6.jpg" alt="Physically intelligent actuator with embedded sensing" loading="lazy">
+          <figcaption>Physically intelligent soft actuator with embedded sensing</figcaption>
         </figure>
-        <!-- 필요 시 이미지를 한 장 더 추가하세요 (연구7, 연구8 등 파일명을 늘려도 무방) -->
       </div>
     </section>
   </main>
@@ -190,7 +183,7 @@
   </footer>
 
   <script>
-    // 일일 방문 카운트 (페이지별 namespace 분리)
+    // Daily visit counter
     async function updateVisitCount() {
       const namespace = "pirol-research-page";
       const key = new Date().toISOString().slice(0,10); // yyyy-mm-dd
