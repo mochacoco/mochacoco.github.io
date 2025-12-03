@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="color-scheme" content="light">
   <title>PIRoL</title>
   <meta name="description" content="DongWook Kim — Robotics, Soft Robotics, Control, and Visuo-tactile AI" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,15 +11,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg: #0b0c10;
-      --panel: #12141a;
-      --muted: #9aa4b2;
-      --text: #e6edf3;
-      --accent: #60a5fa;
-      --ring: #1f2937;
-      --card: #0f1115;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --text: #0f172a;     /* 본문 글자 */
+  --muted: #5b6470;    /* 보조 텍스트 */
+  --accent: #2563eb;   /* 링크/포인트 컬러 */
+  --ring: #e5e7eb;     /* 테두리 */
+  --shadow: 0 10px 30px rgba(0,0,0,.10);
+  color-scheme: light; /* 브라우저 자동 다크 방지 힌트 */
+}
     @media (prefers-color-scheme: light){
       :root{ --bg:#f7fafc; --panel:#ffffff; --card:#ffffff; --text:#0f172a; --muted:#5b6470; --ring:#e5e7eb; --accent:#2563eb; }
     }
