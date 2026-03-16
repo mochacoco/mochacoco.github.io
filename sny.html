@@ -13,30 +13,54 @@
       --border: #e5e7eb;
       --primary: #2563eb;
       --danger: #ef4444;
-      --done: #6b7280; /* gray-600 */
+      --done: #6b7280;
     }
+
     * { box-sizing: border-box; }
+
     body {
-      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      background: var(--bg); color: var(--text);
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.5;
-      display: grid; place-items: start center;
-      min-height: 100dvh; padding: 24px;
+      display: grid;
+      place-items: start center;
+      min-height: 100dvh;
+      padding: 24px;
     }
+
     .app { width: 100%; }
+
     .card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.04);
     }
+
     .composer { padding: 16px; display: grid; gap: 12px; }
     .row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
     .hstack { display: flex; align-items: center; gap: 8px; }
     .fields { display: grid; gap: 8px; }
-    .line { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 8px; }
+
+    .line {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) 120px 96px auto;
+      align-items: center;
+      gap: 8px;
+    }
 
     input[type="text"], textarea, select {
-      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); font: inherit; outline: none; background: #fff;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font: inherit;
+      outline: none;
+      background: #fff;
     }
+
     input[type="checkbox"] { width: 18px; height: 18px; }
 
     .title-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
@@ -46,10 +70,17 @@
     .hint { color: var(--muted); font-size: 14px; }
 
     button {
-      appearance: none; border: 1px solid var(--border); background: #fff; color: var(--text);
-      padding: 10px 14px; border-radius: 10px; font-weight: 600; cursor: pointer;
+      appearance: none;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
       transition: box-shadow .15s ease, transform .02s ease;
     }
+
     button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
     button.ghost { background: #fff; }
     button.icon { width: 36px; height: 36px; border-radius: 9px; font-size: 18px; line-height: 1; }
@@ -59,270 +90,461 @@
 
     .stack-wrap { padding: 8px 16px 0; display: grid; gap: 8px; }
     .stack-toolbar { display: grid; grid-template-columns: 1fr auto; align-items: center; }
-    .stack { margin-top: 8px; padding: 0 0 16px; display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr));}
+    .stack {
+      margin-top: 8px;
+      padding: 0 0 16px;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 
-    .memo-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: grid; gap: 8px; }
-    .memo-head { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
-    .memo-sub { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; color: var(--muted); font-size: 14px; }
+    .memo-card {
+      position: relative;
+      overflow: visible;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: grid;
+      gap: 8px;
+      background: var(--card);
+    }
 
-.memo-card[draggable="true"] { cursor: grab; }
-.memo-card.dragging { opacity: .6; }
-.memo-card.drag-over { outline: 2px dashed var(--primary); }
+    .memo-head {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding-right: 64px;
+    }
 
-    .list { display: grid; gap: 6px; }
-    .ts { color: var(--muted); font-size: 12px; }
+    .memo-sub {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .memo-card[draggable="true"] { cursor: grab; }
+    .memo-card.dragging { opacity: .6; }
+    .memo-card.drag-over { outline: 2px dashed var(--primary); }
+
+    .list { display: grid; gap: 8px; }
+    .ts {
+      color: var(--muted);
+      font-size: 12px;
+      position: absolute;
+      top: 8px;
+      right: 36px;
+    }
+
     .empty { color: var(--muted); text-align: center; padding: 18px; }
-    .prio { font-weight: 700; }
-
     .btns { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
     .urgent { border-color: var(--primary); color: #fff; background: var(--primary); }
     .urgent.active { border-color: var(--danger); background: var(--danger); }
 
-    .color-wrap { display: flex; align-items: center; gap: 6px; margin-left: auto; }
-    .color-select { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); }
-
-    /* list item styles when checked */
     .done-text { color: var(--done); text-decoration: line-through; }
-    .line-time { color: var(--muted); font-size: 12px; margin-left: 8px; }
+    .alert-text { color: var(--danger); font-weight: 700; }
+    .line-time {
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: 8px;
+      white-space: nowrap;
+    }
 
-    /* Priority segmented control */
-    //.prio-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-    //.prio-seg .seg { padding: 6px 10px; border-right: 1px solid var(--border); cursor: pointer; user-select: none; font-size: 13px; background: #fff; }
-    //.prio-seg .seg:last-child { border-right: none; }
-    //.prio-seg .seg.active { background: var(--primary); color: #fff; }
-.prio-seg {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  border-radius: 10px;   /* rounded outer frame */
-  overflow: hidden;
-}
+    .prio-seg {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      width: 100%;
+    }
 
-.prio-seg .seg {
-  padding: 6px 10px;
-  cursor: pointer;
-  user-select: none;
-  font-size: 13px;
-  background: #fff;
-  border-right: 1px solid var(--border);
-  border-radius: 0;      /* reset rounding for all middle buttons */
-}
+    .prio-seg .seg {
+      flex: 1 1 0;
+      padding: 6px 0;
+      cursor: pointer;
+      user-select: none;
+      font-size: 13px;
+      background: #fff;
+      border-right: 1px solid var(--border);
+      border-radius: 0;
+      text-align: center;
+    }
 
-.prio-seg .seg:first-child {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
+    .prio-seg .seg:first-child {
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
 
-.prio-seg .seg:last-child {
-  border-right: none;    /* no divider after the last one */
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
+    .prio-seg .seg:last-child {
+      border-right: none;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
 
-.prio-seg .seg.active {
-  background: var(--primary);
-  color: #fff;
-}
-.sub-seg .seg { font-size: 12px; padding: 4px 8px; }
-.memo-title {
-  font-size: 18px;
+    .prio-seg .seg.active {
+      background: var(--primary);
+      color: #fff;
+    }
 
-}
+    .sub-seg .seg {
+      font-size: 12px;
+      padding: 4px 0;
+    }
 
-.memo-subtitle {
-  
-font-size: 20px;
-  font-weight: 700;
-color: #0f172a;
-}
+    .memo-title { font-size: 18px; }
 
-.memo-text {
-  font-size: 15px;
-white-space: pre-wrap !important;
-  word-break: break-word;
-}
+    .memo-subtitle,
+    .section-subtitle {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+    }
 
-.layout {
-  display: grid;
-  grid-template-columns: 3fr 1fr; /* 왼쪽 75%, 오른쪽 25% */
-  gap: 16px;
-  width: 100%;
-  min-height: 100dvh;
-}
+    .section-subtitle {
+      font-size: 17px;
+    }
 
-/* 왼쪽 메모 3열 그리드 (이미 3열이라면 유지) */
-#mainCol .stack {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-content: start;
-}
+    .memo-text {
+      font-size: 15px;
+      white-space: pre-wrap !important;
+      word-break: break-word;
+    }
 
-/* 오른쪽 S 패널 */
-#sPanel {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: calc(100dvh - 24px);
-  position: sticky; top: 12px; /* 스크롤 시 고정 */
-  overflow: hidden;
-}
+    .layout {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      gap: 16px;
+      width: 100%;
+      min-height: 100dvh;
+    }
 
-.panel-head {
-  font-weight: 700;
-  font-size: 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-}
+    #mainCol .stack {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-content: start;
+    }
 
-.panel-list {
-  overflow: auto;
-  display: grid;
-  gap: 8px;
-}
+    #sPanel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: calc(100dvh - 24px);
+      position: sticky;
+      top: 12px;
+      overflow: hidden;
+    }
 
-/* S 항목 줄 레이아웃 */
-.sline {
-  display: grid;
-  grid-template-columns: auto auto 1fr; /* 체크박스 | 배지 | 텍스트 */
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  border: 1px dashed var(--border);
-  border-radius: 10px;
-  background: #fff;
-}
+    .panel-head {
+      font-weight: 700;
+      font-size: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
 
-.sline .badge {
-  font-size: 12px;
-  font-weight: 700;
-  border: 1px solid #ddd;
-  border-radius: 999px;
-  padding: 0 8px;
-  line-height: 20px;
-}
+    .panel-list {
+      overflow: auto;
+      display: grid;
+      gap: 8px;
+    }
 
-.sline .s-text {
-  font-size: 14px;
-}
+    .sline {
+      display: grid;
+      grid-template-columns: auto auto auto 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      background: #fff;
+    }
 
-.sline .s-meta {
-  grid-column: 1 / -1; /* 다음 줄에 메모 타이틀 */
-  font-size: 12px;
-  color: var(--muted);
-  margin-left: 26px; /* 체크박스+배지 폭만큼 들여쓰기 */
-}
+    .sline .badge {
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      padding: 0 8px;
+      line-height: 20px;
+    }
 
-/* 드롭다운 메뉴 기본 */
-.menu {
-  position: absolute;
-  top: 32px; right: 8px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-  padding: 6px;
-  min-width: 160px;
-  display: none;
-  z-index: 30;
-}
-.menu.open { display: block; }
-.menu button {
-  width: 100%;
-  background: transparent;
-  border: 0;
-  text-align: left;
-  padding: 8px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-.menu button:hover { background: #f5f5f5; }
+    .sline .s-text {
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
-/* 서브메뉴(오른쪽으로 펼침) */
-.submenu {
-  position: absolute;
-  top: 0; left: calc(100% + 6px);
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-  padding: 8px;
-  min-width: 180px;
-  display: none;
-  z-index: 40;
-}
-.submenu.open { display: block; }
+    .sline .s-meta {
+      grid-column: 1 / -1;
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 26px;
+    }
 
-/* 색상 칩 그리드 */
-.swatch-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 24px);
-  gap: 8px;
-}
-.swatch {
-  width: 24px; height: 24px;
-  border-radius: 6px;
-  border: 1px solid rgba(0,0,0,.12);
-  cursor: pointer;
-}
-.swatch:focus { outline: 2px solid rgba(0,0,0,.25); outline-offset: 2px; }
+    .menu {
+      position: absolute;
+      top: 32px;
+      right: 8px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      padding: 6px;
+      min-width: 160px;
+      display: none;
+      z-index: 30;
+    }
 
-/* 우상단 버튼/타임스탬프 겹침 방지(이전 패치 유지 권장) */
-.memo-card { position: relative; overflow: visible; }
-.memo-head { position: relative; padding-right: 64px; }
-.memo-head .ts { position: absolute; top: 8px; right: 36px; }
-.kebab { position:absolute; top:8px; right:8px; background:transparent; border:0; padding:4px 6px; font-size:18px; color:var(--muted); z-index:20; }
-.kebab:hover{ color:var(--text); }
+    .menu.open { display: block; }
 
-.color-wrap { display: none; }
+    .menu button {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
-.line textarea.memo-edit {
-  width: 100%;
-  min-height: 28px;
-  resize: none;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 8px;
-  font-size: 15px;
-  line-height: 1.5;
-}
+    .menu button:hover { background: #f5f5f5; }
 
+    .submenu {
+      position: absolute;
+      top: 0;
+      left: calc(100% + 6px);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      padding: 8px;
+      min-width: 180px;
+      display: none;
+      z-index: 40;
+    }
 
+    .submenu.open { display: block; }
 
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 24px);
+      gap: 8px;
+    }
 
+    .swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,.12);
+      cursor: pointer;
+    }
 
-/* S 패널에서도 여러 줄 보이게 하고 싶다면 */
-.s-text {
-  white-space: pre-wrap;
-  word-break: break-word;
-}
+    .swatch:focus { outline: 2px solid rgba(0,0,0,.25); outline-offset: 2px; }
 
+    .kebab {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: transparent;
+      border: 0;
+      padding: 4px 6px;
+      font-size: 18px;
+      color: var(--muted);
+      z-index: 20;
+    }
 
+    .kebab:hover { color: var(--text); }
+
+    .line textarea.memo-edit {
+      width: 100%;
+      min-height: 28px;
+      resize: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .tag-select {
+      width: 100%;
+      min-width: 0;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font: inherit;
+      background: #fff;
+    }
+
+    .tag-badge {
+      width: 100%;
+      min-width: 0;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      text-align: center;
+      background: #fff;
+      color: var(--text);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .memo-line-group,
+    .section-card {
+      display: grid;
+      gap: 6px;
+      padding: 6px 0;
+      border-top: 1px dashed rgba(0,0,0,0.08);
+    }
+
+    .memo-line-group:first-child,
+    .section-card:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .memo-cell {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toggle-progress {
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(0deg);
+      transition: transform .15s ease, color .15s ease;
+    }
+
+    .toggle-progress.open {
+      transform: rotate(180deg);
+      color: var(--text);
+    }
+
+    .memo-text-btn {
+      min-width: 0;
+      flex: 1 1 auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .memo-text-btn:hover { opacity: .85; }
+
+    .progress-panel {
+      margin-left: 30px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.6);
+      padding: 10px;
+      display: none;
+      gap: 10px;
+    }
+
+    .progress-panel.open {
+      display: grid;
+    }
+
+    .progress-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .progress-empty {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .progress-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px 10px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .progress-item-text {
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .progress-item-ts {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .progress-form {
+      display: grid;
+      gap: 8px;
+    }
+
+    .progress-input {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    .progress-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 1fr 120px auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .section-meta {
+      font-size: 12px;
+      color: var(--muted);
+      justify-self: end;
+    }
   </style>
 </head>
 <body>
   <main class="app">
-<div class="hstack" style="margin-bottom:12px; gap:8px;">
-  <button id="exportBtn" type="button">저장하기</button>
-  <button id="importBtn" type="button">불러오기</button>
-  <input id="importFileInput" type="file" accept="application/json" style="display:none;" />
-</div>
+    <div class="hstack" style="margin-bottom:12px; gap:8px;">
+      <button id="exportBtn" type="button">저장하기</button>
+      <button id="importBtn" type="button">불러오기</button>
+      <button id="groupBtn" type="button">Group</button>
+      <input id="importFileInput" type="file" accept="application/json" style="display:none;" />
+    </div>
 
-    <!-- Composer (Top Placeholder) -->
     <section class="card" id="composerCard">
       <div class="composer">
-        <!-- First row: Title    [ Save button at timestamp position ] -->
         <div class="title-row">
           <input id="titleInput" type="text" placeholder="(제목)" />
-          <!-- Save button occupies the [timestamp] slot in the composer -->
           <button id="saveBtn" type="button" class="primary right" title="Save memo">Save</button>
         </div>
 
-        <!-- Second row: (subtitle)    (priority: 1~9) -->
         <div class="title-sub">
           <input id="subtitleInput" type="text" placeholder="(소제목)" />
           <div class="hstack">
@@ -330,9 +552,7 @@ white-space: pre-wrap !important;
             <div id="prioritySeg" class="prio-seg"></div>
           </div>
         </div>
-        </div>
 
-        <!-- Lines: (checkbox) (memo)  plus (+) to add, minus (-) to remove extra lines -->
         <div class="fields">
           <div id="lines"></div>
           <div class="hstack right">
@@ -341,7 +561,6 @@ white-space: pre-wrap !important;
         </div>
       </div>
 
-      <!-- Saved memos controls + stack -->
       <div class="stack-wrap">
         <div class="stack-toolbar">
           <div class="hint">메모</div>
@@ -350,432 +569,561 @@ white-space: pre-wrap !important;
           </div>
         </div>
 
-
         <div class="layout">
-    <section id="mainCol">
-      <div class="stack" id="memoStack">
-        <div class="empty" id="emptyState">No memos yet. Your saved memos will appear here.</div>
-      </div>
-    </section>
+          <section id="mainCol">
+            <div class="stack" id="memoStack">
+              <div class="empty" id="emptyState">No memos yet. Your saved memos will appear here.</div>
+            </div>
+          </section>
 
-    <aside id="sPanel">
-      <div class="panel-head">샘플링 모아보기</div>
-      <div id="sList" class="panel-list"></div>
-    </aside>
+          <aside id="sPanel">
+            <div class="panel-head">온보딩 모아보기</div>
+            <div id="sList" class="panel-list"></div>
+          </aside>
         </div>
       </div>
-
-
     </section>
   </main>
 
   <script>
-    // --- Persistence ---
     const STORAGE_KEY = 'memoApp.memos.v4';
 
-    // --- Constants ---
-    const DEFAULT_BG = '#FFE4C4'; // bisque
-	const COLOR_OPTIONS = [
-  '#FD8A8A',
-  '#FFCBCB',
-  '#9EA1D4',
-  '#F1F7B5',
-  '#A8D1D1',
-  '#DFEBEB',
-  '#C3DCD8',
-  '#EFD1D4',
-  '#FBE8ED',
-  '#DBD9DA',
-  '#EFE1E1',
-  '#F0D2DA',
-  '#E0C1C6',
-  '#D1B4C6',
-  '#CBC4D6',
-  '#EADBDD',
-  '#FCD5CE',
-  '#FFCAD4',
-  '#FADDE1',
-  '#FFF1F5',
-  '#F6EEE9'
-];
-    // --- State ---
+    const DEFAULT_BG = '#FFE4C4';
+    const COLOR_OPTIONS = [
+      '#FD8A8A', '#FFCBCB', '#9EA1D4', '#F1F7B5', '#A8D1D1',
+      '#DFEBEB', '#C3DCD8', '#EFD1D4', '#FBE8ED', '#DBD9DA',
+      '#EFE1E1', '#F0D2DA', '#E0C1C6', '#D1B4C6', '#CBC4D6',
+      '#EADBDD', '#FCD5CE', '#FFCAD4', '#FADDE1', '#FFF1F5',
+      '#F6EEE9'
+    ];
+
+    const TAG_OPTIONS = ['리뉴얼', '입점', '분쟁', '프로젝트', '기타이슈'];
+
     const state = {
       memos: [],
       composer: {
         title: '',
         subtitle: '',
         priority: 3,
-        lines: [] // { id, text, checked, checkedAt }
+        lines: []
       },
-      sortMode: 'time', // 'time' | 'priority'
-      editingId: null,  // memo.id currently being edited
-      editDraft: null   // temp draft when editing
+      sortMode: 'time',
+      editingId: null,
+      editDraft: null,
+      openProgress: {}
     };
 
-    // --- Elements ---
     const titleInput = document.getElementById('titleInput');
     const subtitleInput = document.getElementById('subtitleInput');
     const prioritySegEl = document.getElementById('prioritySeg');
     const saveBtn = document.getElementById('saveBtn');
     const addLineBtn = document.getElementById('addLineBtn');
     const sortBtn = document.getElementById('sortBtn');
+    const groupBtn = document.getElementById('groupBtn');
     const linesEl = document.getElementById('lines');
     const stack = document.getElementById('memoStack');
     const emptyState = document.getElementById('emptyState');
 
-    // --- Utils ---
     const nowStamp = () => new Date().toLocaleString();
     const uid = () => Math.random().toString(36).slice(2, 10);
     const persist = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(state.memos));
-function clampPrio(p){ p = parseInt(p,10)||3; return Math.max(1, Math.min(5, p)); }
-    const load = () => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) state.memos = JSON.parse(raw) || [];
-    // [ADDED] migrate old data (1~9 -> 1~5, add subPrio)
-    state.memos.forEach(m => {
-      m.priority = clampPrio(m.priority);
-      (m.lines || []).forEach(l => {
-    	if (l.subPrio == null) l.subPrio = 2; // 기본값 여전히 2
+
+    function clampPrio(p) {
+      p = parseInt(p, 10) || 3;
+      return Math.max(1, Math.min(5, p));
+    }
+
+    function stampToTime(stamp) {
+      const t = new Date(stamp).getTime();
+      return Number.isFinite(t) ? t : 0;
+    }
+
+    function ensureLineDefaults(line) {
+      if (!line.id) line.id = uid();
+      if (line.subPrio == null) line.subPrio = 2;
+      if (line.tag == null) line.tag = '';
+      if (!Array.isArray(line.progressLogs)) line.progressLogs = [];
+      return line;
+    }
+
+    function ensureMemoDefaults(m) {
+      if (!m.id) m.id = uid();
+      if (!m.bg) m.bg = DEFAULT_BG;
+      if (Array.isArray(m.sections)) {
+        m.sections.forEach(s => {
+          if (!s.id) s.id = uid();
+          if (s.priority == null) s.priority = 3;
+          if (!Array.isArray(s.lines)) s.lines = [];
+          s.lines.forEach(l => ensureLineDefaults(l));
+        });
+      } else {
+        if (m.priority == null) m.priority = 3;
+        if (!Array.isArray(m.lines)) m.lines = [];
+        m.lines.forEach(l => ensureLineDefaults(l));
+      }
+      return m;
+    }
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) state.memos = JSON.parse(raw) || [];
+        state.memos = state.memos.map(m => ensureMemoDefaults(m));
+      } catch (_) {}
+    }
+
+    function isMergedMemo(m) {
+      return Array.isArray(m.sections);
+    }
+
+    function sectionPriorityValue(s) {
+      return s.urgent ? 10 : (parseInt(s.priority, 10) || 0);
+    }
+
+    function memoPriorityValue(m) {
+      if (isMergedMemo(m)) {
+        return Math.max(0, ...m.sections.map(s => sectionPriorityValue(s)));
+      }
+      return m.urgent ? 10 : (parseInt(m.priority, 10) || 0);
+    }
+
+    function memoMaxSubPrio(m) {
+      if (isMergedMemo(m)) {
+        return Math.max(
+          0,
+          ...m.sections.flatMap(s => (s.lines || []).map(l => parseInt(l.subPrio, 10) || 0))
+        );
+      }
+      return Math.max(0, ...(m.lines || []).map(l => parseInt(l.subPrio, 10) || 0));
+    }
+
+    function sortLinesBySubPrio(lines, original) {
+      const arr = (lines || []).slice();
+      arr.sort((a, b) => {
+        const diff = (parseInt(b.subPrio, 10) || 0) - (parseInt(a.subPrio, 10) || 0);
+        if (diff) return diff;
+        return original.indexOf(a) - original.indexOf(b);
       });
-    });
-  } catch (_) {}
-};
-    const effPriority = (m) => (m.urgent ? 10 : (parseInt(m.priority, 10) || 0));
-
-const subRank = (l) => {
-  // E는 내부 저장을 4로 쓴다면 그대로 parseInt만 해도 됨
-  // 혹시 문자열 'E'로 온다면 아래 한 줄만 유지하면 됨:
-  // if (l.subPrio === 'E') return 4;
-  const v = parseInt(l.subPrio, 10);
-  return Number.isFinite(v) ? v : 0;
-};
-
-function sortLinesBySubPrio(lines, original) {
-  // original: 원래 배열(타이브레이커로 처음 순서 유지)
-  const arr = (lines || []).slice();
-  arr.sort((a, b) => {
-    // 1) subpriority: 큰 값이 먼저 (E=4 > 3 > 2 > 1)
-    const sb = subRank(b) - subRank(a);
-    if (sb) return sb;
-
-    // 2) 체크 여부로도 묶고 싶으면(미체크 우선) 켜세요:
-    // if (!!a.checked !== !!b.checked) return a.checked - b.checked;
-
-    // 3) 같은 값이면 초기 입력 순서를 유지
-    return original.indexOf(a) - original.indexOf(b);
-  });
-  return arr;
-}
-
-
-
-const maxSubPrio = (m) =>
-  Math.max(
-    0,
-    ...((m.lines || []).map(l => {
-      const v = parseInt(l.subPrio, 10);
-      return Number.isFinite(v) ? v : 0; // (E는 숫자 4로 저장했다고 가정)
-    }))
-  );
-
-
+      return arr;
+    }
 
     function updateSortButton() {
-      if (state.sortMode === 'priority') {
-        sortBtn.classList.add('sort-on');
-      } else {
-        sortBtn.classList.remove('sort-on');
+      if (state.sortMode === 'priority') sortBtn.classList.add('sort-on');
+      else sortBtn.classList.remove('sort-on');
+    }
+
+    function progressKey(memoId, lineId) {
+      return `${memoId}::${lineId}`;
+    }
+
+    function isProgressOpen(memoId, lineId) {
+      return !!state.openProgress[progressKey(memoId, lineId)];
+    }
+
+    function toggleProgress(memoId, lineId) {
+      const key = progressKey(memoId, lineId);
+      state.openProgress[key] = !state.openProgress[key];
+      renderSaved();
+    }
+
+    function ensureAtLeastOneLine() {
+      if (!Array.isArray(state.composer.lines)) state.composer.lines = [];
+      if (state.composer.lines.length === 0) {
+        state.composer.lines.push(ensureLineDefaults({
+          id: uid(),
+          text: '',
+          checked: false,
+          checkedAt: null,
+          subPrio: 2,
+          tag: '',
+          progressLogs: []
+        }));
       }
     }
 
-    // --- Composer line management ---
-    function ensureAtLeastOneLine() {
-  if (!Array.isArray(state.composer.lines)) state.composer.lines = [];
-  if (state.composer.lines.length === 0) {
-    state.composer.lines.push({ id: uid(), text: '', checked: false, checkedAt: null, subPrio: 2 }); // [CHANGED]
-  }
-}
-function addLine(text = '', checked = false) {
-  state.composer.lines.push({ id: uid(), text, checked, checkedAt: null, subPrio: 2 }); // [CHANGED]
-  renderComposerLines();
-}
+    function addLine(text = '', checked = false) {
+      state.composer.lines.push(ensureLineDefaults({
+        id: uid(),
+        text,
+        checked,
+        checkedAt: null,
+        subPrio: 2,
+        tag: '',
+        progressLogs: []
+      }));
+      renderComposerLines();
+    }
 
     function removeLine(id) {
-      if (state.composer.lines.length <= 1) return; // keep at least one line
+      if (state.composer.lines.length <= 1) return;
       state.composer.lines = state.composer.lines.filter(l => l.id !== id);
       renderComposerLines();
     }
 
     function renderComposerLines() {
-  ensureAtLeastOneLine();
-  linesEl.innerHTML = '';
-  state.composer.lines.forEach((line) => {
-    const row = document.createElement('div');
-    row.className = 'line';
+      ensureAtLeastOneLine();
+      linesEl.innerHTML = '';
 
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.checked = !!line.checked;
-    cb.addEventListener('change', () => { line.checked = cb.checked; line.checkedAt = cb.checked ? nowStamp() : null; });
+      state.composer.lines.forEach((line) => {
+        ensureLineDefaults(line);
 
-    
+        const row = document.createElement('div');
+        row.className = 'line';
 
-    const text = document.createElement('input');
-    text.type = 'text';
-    text.placeholder = '(memo)';
-    text.value = line.text || '';
-    text.addEventListener('input', () => { line.text = text.value; });
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = !!line.checked;
+        cb.addEventListener('change', () => {
+          line.checked = cb.checked;
+          line.checkedAt = cb.checked ? nowStamp() : null;
+        });
 
-const sub = document.createElement('div'); // [ADDED] sub-priority control
-    renderSubPrioSeg(sub, line.subPrio ?? 2, (val) => { 
-line.subPrio = val; 
-renderComposerLines();
+        const text = document.createElement('input');
+        text.type = 'text';
+        text.placeholder = '(memo)';
+        text.value = line.text || '';
+        text.addEventListener('input', () => { line.text = text.value; });
 
-});
+        const sub = document.createElement('div');
+        renderSubPrioSeg(sub, line.subPrio ?? 2, (val) => {
+          line.subPrio = val;
+          renderComposerLines();
+        });
 
-    const ctrls = document.createElement('div');
-    ctrls.className = 'hstack right';
-    if (state.composer.lines.length > 1) {
-      const removeBtn = document.createElement('button');
-      removeBtn.type = 'button';
-      removeBtn.className = 'icon danger';
-      removeBtn.title = 'Remove line';
-      removeBtn.textContent = '−';
-      removeBtn.addEventListener('click', () => removeLine(line.id));
-      ctrls.appendChild(removeBtn);
+        const tagSel = document.createElement('select');
+        tagSel.className = 'tag-select';
+        const emptyOpt = document.createElement('option');
+        emptyOpt.value = '';
+        emptyOpt.textContent = '태그';
+        tagSel.appendChild(emptyOpt);
+
+        TAG_OPTIONS.forEach(tag => {
+          const opt = document.createElement('option');
+          opt.value = tag;
+          opt.textContent = tag;
+          if ((line.tag || '') === tag) opt.selected = true;
+          tagSel.appendChild(opt);
+        });
+
+        tagSel.addEventListener('change', () => {
+          line.tag = tagSel.value;
+        });
+
+        const ctrls = document.createElement('div');
+        ctrls.className = 'hstack right';
+
+        if (state.composer.lines.length > 1) {
+          const removeBtn = document.createElement('button');
+          removeBtn.type = 'button';
+          removeBtn.className = 'icon danger';
+          removeBtn.title = 'Remove line';
+          removeBtn.textContent = '−';
+          removeBtn.addEventListener('click', () => removeLine(line.id));
+          ctrls.appendChild(removeBtn);
+        }
+
+        row.appendChild(cb);
+        row.appendChild(text);
+        row.appendChild(sub);
+        row.appendChild(tagSel);
+        row.appendChild(ctrls);
+        linesEl.appendChild(row);
+      });
     }
 
-    row.appendChild(cb);
-    
-    row.appendChild(text);
-row.appendChild(sub);   // [ADDED]
-    row.appendChild(ctrls);
-    linesEl.appendChild(row);
-  });
-}
+    function getDisplayItems() {
+      const items = state.memos.slice();
+      if (state.sortMode === 'priority') {
+        items.sort((a, b) => {
+          const ap = memoPriorityValue(a);
+          const bp = memoPriorityValue(b);
+          if (bp !== ap) return bp - ap;
 
-    // --- Render saved memos ---
+          const as = memoMaxSubPrio(a);
+          const bs = memoMaxSubPrio(b);
+          if (bs !== as) return bs - as;
+
+          return stampToTime(b.createdAt) - stampToTime(a.createdAt);
+        });
+      }
+      return items;
+    }
+
     function renderSaved() {
-  // Clear existing
-  stack.querySelectorAll('.memo-card').forEach(n => n.remove());
+      stack.querySelectorAll('.memo-card').forEach(n => n.remove());
 
-  if (state.memos.length === 0) {
-    emptyState.style.display = 'block';
-    return;
-  }
-  emptyState.style.display = 'none';
+      if (state.memos.length === 0) {
+        emptyState.style.display = 'block';
+        renderSPanel();
+        return;
+      }
+      emptyState.style.display = 'none';
 
-  // [CHANGED] sort: priority 모드에서만 정렬. time 모드는 현재 배열 순서 유지(커스텀 순서).
-  let items = state.memos;
-  if (state.sortMode === 'priority') {
-    items = state.memos.slice().sort((a, b) => {
-      const ap = effPriority(a), bp = effPriority(b);
-      if (bp !== ap) return bp - ap;
+      const items = getDisplayItems();
 
-const as = maxSubPrio(a), bs = maxSubPrio(b);
-    if (bs !== as) return bs - as;
+      items.forEach(m => {
+        const card = document.createElement('article');
+        card.className = 'memo-card';
+        card.style.background = m.bg || DEFAULT_BG;
+        card.dataset.id = m.id;
 
+        if (!isMergedMemo(m) && state.sortMode === 'time' && state.editingId !== m.id) {
+          card.setAttribute('draggable', 'true');
+          card.addEventListener('dragstart', handleDragStart);
+          card.addEventListener('dragover', handleDragOver);
+          card.addEventListener('dragleave', handleDragLeave);
+          card.addEventListener('drop', handleDrop);
+          card.addEventListener('dragend', handleDragEnd);
+        }
 
-      const at = new Date(a.createdAt).getTime();
-      const bt = new Date(b.createdAt).getTime();
-      return bt - at;
-    });
-  }
+        if (isMergedMemo(m)) {
+          renderMergedCard(card, m);
+        } else if (state.editingId === m.id) {
+          renderEditCard(card, m);
+        } else {
+          renderReadCard(card, m);
+        }
 
-  items.forEach(m => {
-    const card = document.createElement('article');
-    card.className = 'memo-card';
-    card.style.background = m.bg || DEFAULT_BG;
-    card.dataset.id = m.id;
+        stack.appendChild(card);
+      });
 
-    // [ADD] time 모드에서만 드래그 가능
-    if (state.sortMode === 'time' && state.editingId !== m.id) {
-      card.setAttribute('draggable', 'true');
-      card.addEventListener('dragstart', handleDragStart);
-      card.addEventListener('dragover', handleDragOver);
-      card.addEventListener('dragleave', handleDragLeave);
-      card.addEventListener('drop', handleDrop);
-      card.addEventListener('dragend', handleDragEnd);
+      renderSPanel();
     }
 
-    if (state.editingId === m.id) {
-      renderEditCard(card, m);
-    } else {
-      renderReadCard(card, m);
+    let dragSrcId = null;
+
+    function handleDragStart(e) {
+      dragSrcId = this.dataset.id;
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
     }
-    stack.appendChild(card);
-  });
 
-renderSPanel();
-}
+    function handleDragOver(e) {
+      e.preventDefault();
+      this.classList.add('drag-over');
+      e.dataTransfer.dropEffect = 'move';
+    }
 
-let dragSrcId = null;
+    function handleDragLeave() {
+      this.classList.remove('drag-over');
+    }
 
-function handleDragStart(e) {
-  dragSrcId = this.dataset.id;
-  this.classList.add('dragging');
-  e.dataTransfer.effectAllowed = 'move';
-}
+    function handleDrop(e) {
+      e.preventDefault();
+      this.classList.remove('drag-over');
+      const fromId = dragSrcId;
+      const toId = this.dataset.id;
+      if (!fromId || fromId === toId) return;
 
-function handleDragOver(e) {
-  e.preventDefault(); // allow drop
-  this.classList.add('drag-over');
-  e.dataTransfer.dropEffect = 'move';
-}
+      const fromIndex = state.memos.findIndex(m => m.id === fromId);
+      const toIndex = state.memos.findIndex(m => m.id === toId);
+      if (fromIndex < 0 || toIndex < 0) return;
 
-function handleDragLeave() {
-  this.classList.remove('drag-over');
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  this.classList.remove('drag-over');
-  const fromId = dragSrcId;
-  const toId = this.dataset.id;
-  if (!fromId || fromId === toId) return;
-
-  const fromIndex = state.memos.findIndex(m => m.id === fromId);
-  const toIndex   = state.memos.findIndex(m => m.id === toId);
-  if (fromIndex < 0 || toIndex < 0) return;
-
-  const [moved] = state.memos.splice(fromIndex, 1);
-  state.memos.splice(toIndex, 0, moved);
-  persist();
-  renderSaved();
-}
-
-function handleDragEnd() {
-  this.classList.remove('dragging');
-  stack.querySelectorAll('.memo-card').forEach(c => c.classList.remove('drag-over'));
-}
-
-
-    function renderReadCard(card, m) {
-      const head = document.createElement('div');
-      head.className = 'memo-head';
-      const title = document.createElement('div');
-title.className = 'memo-title';
-      title.textContent = m.title || '(Untitled)';
-      const ts = document.createElement('div');
-      ts.className = 'ts';
-      ts.textContent = m.createdAt;
-      head.appendChild(title);
-      head.appendChild(ts);
-
-card.appendChild(head);
-card.classList.add('memo-card'); // position 기준(중복 무해)
-
-  // ⋮ 버튼
-  const kebab = document.createElement('button');
-  kebab.type = 'button';
-  kebab.className = 'kebab';
-  kebab.textContent = '⋮';
-
-  // 메인 메뉴
-  const menu = document.createElement('div');
-  menu.className = 'menu';
-
-  // "색 변경하기 ▸" 항목
-  const colorMenuBtn = document.createElement('button');
-  colorMenuBtn.type = 'button';
-  colorMenuBtn.className = 'submenu-toggle';
-  colorMenuBtn.textContent = '색 변경하기 ▸';
-
-  // 서브메뉴(컬러칩)
-  const subMenu = document.createElement('div');
-  subMenu.className = 'submenu';
-
-  const grid = document.createElement('div');
-  grid.className = 'swatch-grid';
-  (COLOR_OPTIONS || []).forEach(c => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'swatch';
-    b.style.background = c;
-    b.title = c;
-    b.addEventListener('click', (e) => {
-      e.stopPropagation();
-      m.bg = c;
-      card.style.background = c;
+      const [moved] = state.memos.splice(fromIndex, 1);
+      state.memos.splice(toIndex, 0, moved);
       persist();
-      subMenu.classList.remove('open');
-      menu.classList.remove('open');
-    });
-    grid.appendChild(b);
-  });
-  subMenu.appendChild(grid);
+      renderSaved();
+    }
 
-  colorMenuBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    // 다른 서브메뉴 닫기
-    document.querySelectorAll('.submenu.open').forEach(el => el.classList.remove('open'));
-    subMenu.classList.toggle('open');
-  });
+    function handleDragEnd() {
+      this.classList.remove('dragging');
+      stack.querySelectorAll('.memo-card').forEach(c => c.classList.remove('drag-over'));
+    }
 
-  menu.appendChild(colorMenuBtn);
-  menu.appendChild(subMenu);
+    function addProgressLog(memo, line, text) {
+      const trimmed = (text || '').trim();
+      if (!trimmed) return;
+      ensureLineDefaults(line);
+      line.progressLogs.unshift({
+        id: uid(),
+        text: trimmed,
+        createdAt: nowStamp()
+      });
+      persist();
+      renderSaved();
+    }
 
-const deleteMenuBtn = document.createElement('button');
-deleteMenuBtn.type = 'button';
-deleteMenuBtn.textContent = '삭제';
-deleteMenuBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  if (!confirm('삭제하시겠습니까?')) return;
-  state.memos = state.memos.filter(mm => mm.id !== m.id);
-  persist();
-  renderSaved();
-});
-menu.appendChild(deleteMenuBtn);
+    function createLineTextEl(item) {
+      const text = document.createElement('div');
+      text.className = 'memo-text';
+      text.textContent = item.text || '';
+      const subPrioVal = parseInt(item.subPrio, 10) || 0;
+      if (subPrioVal === 5 && !item.checked) text.classList.add('alert-text');
+      if (item.checked) text.classList.add('done-text');
+      return text;
+    }
 
+    function attachProgressSection(container, memo, item) {
+      const progressPanel = document.createElement('div');
+      progressPanel.className = 'progress-panel' + (isProgressOpen(memo.id, item.id) ? ' open' : '');
 
-  kebab.addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.querySelectorAll('.menu.open').forEach(el => el.classList.remove('open'));
-    document.querySelectorAll('.submenu.open').forEach(el => el.classList.remove('open'));
-    menu.classList.toggle('open');
-  });
+      const progressList = document.createElement('div');
+      progressList.className = 'progress-list';
 
-  // 카드에 부착 (헤더 다음)
-  card.appendChild(kebab);
-  card.appendChild(menu);
+      if (!item.progressLogs.length) {
+        const empty = document.createElement('div');
+        empty.className = 'progress-empty';
+        empty.textContent = '진행 현황 없음';
+        progressList.appendChild(empty);
+      } else {
+        item.progressLogs.forEach(log => {
+          const pItem = document.createElement('div');
+          pItem.className = 'progress-item';
 
-  // 바깥 클릭 시 닫기 (중복 리스너 방지하려면 상위에서 once로 관리해도 OK)
-  document.addEventListener('click', () => {
-    menu.classList.remove('open');
-    subMenu.classList.remove('open');
-  });
+          const pText = document.createElement('div');
+          pText.className = 'progress-item-text';
+          pText.textContent = log.text || '';
 
-      const sub = document.createElement('div');
-      sub.className = 'memo-sub';
+          const pTs = document.createElement('div');
+          pTs.className = 'progress-item-ts';
+          pTs.textContent = log.createdAt || '';
+
+          pItem.appendChild(pText);
+          pItem.appendChild(pTs);
+          progressList.appendChild(pItem);
+        });
+      }
+
+      const progressForm = document.createElement('div');
+      progressForm.className = 'progress-form';
+
+      const progressInput = document.createElement('textarea');
+      progressInput.className = 'progress-input';
+      progressInput.placeholder = '진행 현황 입력';
+
+      const progressActions = document.createElement('div');
+      progressActions.className = 'progress-actions';
+
+      const addProgressBtn = document.createElement('button');
+      addProgressBtn.type = 'button';
+      addProgressBtn.className = 'primary';
+      addProgressBtn.textContent = '추가';
+      addProgressBtn.addEventListener('click', () => addProgressLog(memo, item, progressInput.value));
+
+      progressInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          addProgressLog(memo, item, progressInput.value);
+        }
+      });
+
+      progressActions.appendChild(addProgressBtn);
+      progressForm.appendChild(progressInput);
+      progressForm.appendChild(progressActions);
+
+      progressPanel.appendChild(progressList);
+      progressPanel.appendChild(progressForm);
+      container.appendChild(progressPanel);
+    }
+
+    function renderColorMenu(card, memo) {
+      const kebab = document.createElement('button');
+      kebab.type = 'button';
+      kebab.className = 'kebab';
+      kebab.textContent = '⋮';
+
+      const menu = document.createElement('div');
+      menu.className = 'menu';
+
+      const colorMenuBtn = document.createElement('button');
+      colorMenuBtn.type = 'button';
+      colorMenuBtn.className = 'submenu-toggle';
+      colorMenuBtn.textContent = '색 변경하기 ▸';
+
+      const subMenu = document.createElement('div');
+      subMenu.className = 'submenu';
+
+      const grid = document.createElement('div');
+      grid.className = 'swatch-grid';
+
+      COLOR_OPTIONS.forEach(c => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'swatch';
+        b.style.background = c;
+        b.title = c;
+        b.addEventListener('click', (e) => {
+          e.stopPropagation();
+          memo.bg = c;
+          card.style.background = c;
+          persist();
+          subMenu.classList.remove('open');
+          menu.classList.remove('open');
+        });
+        grid.appendChild(b);
+      });
+
+      subMenu.appendChild(grid);
+
+      colorMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.submenu.open').forEach(el => el.classList.remove('open'));
+        subMenu.classList.toggle('open');
+      });
+
+      menu.appendChild(colorMenuBtn);
+      menu.appendChild(subMenu);
+
+      const deleteMenuBtn = document.createElement('button');
+      deleteMenuBtn.type = 'button';
+      deleteMenuBtn.textContent = '삭제';
+      deleteMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!confirm('삭제하시겠습니까?')) return;
+        state.memos = state.memos.filter(mm => mm.id !== memo.id);
+        persist();
+        renderSaved();
+      });
+      menu.appendChild(deleteMenuBtn);
+
+      kebab.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.menu.open').forEach(el => el.classList.remove('open'));
+        document.querySelectorAll('.submenu.open').forEach(el => el.classList.remove('open'));
+        menu.classList.toggle('open');
+      });
+
+      card.appendChild(kebab);
+      card.appendChild(menu);
+    }
+
+    function renderSectionContent(parent, memo, section) {
+      const sectionWrap = document.createElement('div');
+      sectionWrap.className = 'section-card';
+
+      const head = document.createElement('div');
+      head.className = 'section-head';
+
       const subtitle = document.createElement('div');
-subtitle.className = 'memo-subtitle';
-      subtitle.textContent = m.subtitle || '';
+      subtitle.className = 'section-subtitle';
+      subtitle.textContent = section.subtitle || '(소제목 없음)';
+
       const prio = document.createElement('div');
-      // (2) 긴급 -> P10 always reflected, regardless of sort mode
+      renderPrioritySeg(prio, parseInt(section.priority, 10) || 3, (val) => {
+        section.priority = val;
+        persist();
+        renderSaved();
+      });
 
+      const meta = document.createElement('div');
+      meta.className = 'section-meta';
+      meta.textContent = section.createdAt || '';
 
-
-      //const pLabel = m.urgent ? 'P10 (긴급)' : `P${m.priority}`;
-      //prio.innerHTML = `<span class="prio">${pLabel}</span>`;
-
-	const setPrio = (val) => {
-  m.priority = val;
-  persist();
-  renderSaved(); // 둘 다 즉시 반영 (time 모드: 순서 유지, priority 모드: 재정렬)
-};
-renderPrioritySeg(prio, parseInt(m.priority, 10) || 5, setPrio);
-
-
-      sub.appendChild(subtitle);
-      sub.appendChild(prio);
+      head.appendChild(subtitle);
+      head.appendChild(prio);
+      head.appendChild(meta);
+      sectionWrap.appendChild(head);
 
       const list = document.createElement('div');
       list.className = 'list';
-const sorted = sortLinesBySubPrio(m.lines, m.lines);
 
+      const sorted = sortLinesBySubPrio(section.lines || [], section.lines || []);
 
-      sorted.forEach((item) => {
+      sorted.forEach(item => {
+        ensureLineDefaults(item);
+
+        const wrap = document.createElement('div');
+        wrap.className = 'memo-line-group';
 
         const row = document.createElement('div');
         row.className = 'line';
@@ -783,77 +1131,114 @@ const sorted = sortLinesBySubPrio(m.lines, m.lines);
         const cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.checked = !!item.checked;
-        // (1) live-editable checkboxes in archived cards
-        cb.addEventListener('change', () => {
-          item.checked = cb.checked;
-          item.checkedAt = cb.checked ? nowStamp() : null;
-          // Apply style & timestamp immediately
-          text.classList.toggle('done-text', !!item.checked);
-          timeEl.textContent = item.checkedAt ? item.checkedAt : '';
+
+        const memoCell = document.createElement('div');
+        memoCell.className = 'memo-cell';
+
+        const toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = 'toggle-progress' + (isProgressOpen(memo.id, item.id) ? ' open' : '');
+        toggleBtn.textContent = '▼';
+        toggleBtn.title = '진행 현황 펼치기';
+
+        const textBtn = document.createElement('button');
+        textBtn.type = 'button';
+        textBtn.className = 'memo-text-btn';
+
+        const text = createLineTextEl(item);
+        textBtn.appendChild(text);
+
+        memoCell.appendChild(toggleBtn);
+        memoCell.appendChild(textBtn);
+
+        const subPrioEl = document.createElement('div');
+        renderSubPrioSeg(subPrioEl, item.subPrio ?? 2, (val) => {
+          item.subPrio = val;
           persist();
+          renderSaved();
         });
 
-
-
-
-        const text = document.createElement('div');
-text.className = 'memo-text';
-        text.textContent = item.text || '';
-        if (item.checked) text.classList.add('done-text');
-
-const sub = document.createElement('div'); // [ADDED] sub-priority control
-  renderSubPrioSeg(sub, item.subPrio ?? 2, (val) => {
-    item.subPrio = val;
-    persist();
-renderSaved();
-  });
-
-
+        const tagBox = document.createElement('div');
+        tagBox.className = 'tag-badge';
+        tagBox.textContent = item.tag || '-';
 
         const timeEl = document.createElement('div');
         timeEl.className = 'line-time right';
         timeEl.textContent = item.checkedAt ? item.checkedAt : '';
 
+        cb.addEventListener('change', () => {
+          item.checked = cb.checked;
+          item.checkedAt = cb.checked ? nowStamp() : null;
+          text.classList.toggle('done-text', !!item.checked);
+          if (!item.checked && (parseInt(item.subPrio, 10) || 0) === 5) text.classList.add('alert-text');
+          else text.classList.remove('alert-text');
+          timeEl.textContent = item.checkedAt ? item.checkedAt : '';
+          persist();
+          renderSPanel();
+        });
+
+        const toggleOpen = () => toggleProgress(memo.id, item.id);
+        toggleBtn.addEventListener('click', toggleOpen);
+        textBtn.addEventListener('click', toggleOpen);
+
         row.appendChild(cb);
-        row.appendChild(text);
+        row.appendChild(memoCell);
+        row.appendChild(subPrioEl);
+        row.appendChild(tagBox);
         row.appendChild(timeEl);
-row.appendChild(sub);
-        list.appendChild(row);
+
+        wrap.appendChild(row);
+        attachProgressSection(wrap, memo, item);
+        list.appendChild(wrap);
       });
 
-      // Color selector (always available)
-      const colorWrap = document.createElement('div');
-      colorWrap.className = 'color-wrap';
+      sectionWrap.appendChild(list);
+      parent.appendChild(sectionWrap);
+    }
 
-      const colorSel = document.createElement('select');
-      colorSel.className = 'color-select';
-      COLOR_OPTIONS.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c; opt.textContent = c; opt.style.background = c;
-        if ((m.bg || DEFAULT_BG) === c) opt.selected = true;
-        colorSel.appendChild(opt);
-      });
-      colorSel.addEventListener('change', () => {
-        m.bg = colorSel.value;
-        card.style.background = m.bg;
-        persist();
-      });
+    function renderReadCard(card, m) {
+      const head = document.createElement('div');
+      head.className = 'memo-head';
 
-      colorWrap.appendChild(colorSel);
+      const title = document.createElement('div');
+      title.className = 'memo-title';
+      title.textContent = m.title || '(Untitled)';
 
-      const btns = document.createElement('div');
-      btns.className = 'btns';
+      const ts = document.createElement('div');
+      ts.className = 'ts';
+      ts.textContent = m.createdAt || '';
+
+      head.appendChild(title);
+      head.appendChild(ts);
+      card.appendChild(head);
+
+      renderColorMenu(card, m);
+
+      const section = {
+        id: m.id,
+        subtitle: m.subtitle,
+        priority: m.priority,
+        urgent: m.urgent,
+        createdAt: m.createdAt,
+        lines: m.lines || []
+      };
+      renderSectionContent(card, m, section);
+
+      const footer = document.createElement('div');
+      footer.className = 'hstack';
+
+      const btnHolder = document.createElement('div');
+      btnHolder.className = 'btns';
+
       const urgentBtn = document.createElement('button');
       urgentBtn.type = 'button';
       urgentBtn.className = 'urgent' + (m.urgent ? ' active' : '');
       urgentBtn.textContent = '긴급';
-      urgentBtn.title = '긴급 토글 (blue ↔ red)';
       urgentBtn.addEventListener('click', () => {
-        m.urgent = !m.urgent; // toggle
+        m.urgent = !m.urgent;
         urgentBtn.classList.toggle('active', m.urgent);
         persist();
-        // (2) Sorting by priority updates if enabled
-        if (state.sortMode === 'priority') renderSaved();
+        renderSaved();
       });
 
       const modifyBtn = document.createElement('button');
@@ -861,39 +1246,32 @@ row.appendChild(sub);
       modifyBtn.textContent = '수정';
       modifyBtn.addEventListener('click', () => startEdit(m));
 
-      // header + controls
-      card.appendChild(head);
-      card.appendChild(sub);
-      card.appendChild(list);
-
-      const footer = document.createElement('div');
-      footer.className = 'hstack';
-      footer.appendChild(colorWrap);
-      const btnHolder = document.createElement('div');
-      btnHolder.className = 'btns';
       btnHolder.appendChild(urgentBtn);
       btnHolder.appendChild(modifyBtn);
-
-      // Delete button next to Modify
-      const deleteBtn = document.createElement('button');
-      deleteBtn.type = 'button';
-      deleteBtn.textContent = 'Delete';
-      deleteBtn.title = 'Delete this memo';
-
-      deleteBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  const ok = window.confirm('삭제하시겠습니까?');
-  if (!ok) return; // 아니오(취소)면 종료
-
-  state.memos = state.memos.filter(mm => mm.id !== m.id);
-  persist();
-  renderSaved();
-});
-
-      //btnHolder.appendChild(deleteBtn);
       footer.appendChild(btnHolder);
       card.appendChild(footer);
+    }
+
+    function renderMergedCard(card, m) {
+      const head = document.createElement('div');
+      head.className = 'memo-head';
+
+      const title = document.createElement('div');
+      title.className = 'memo-title';
+      title.textContent = m.title || '(Untitled)';
+
+      const ts = document.createElement('div');
+      ts.className = 'ts';
+      ts.textContent = m.createdAt || '';
+
+      head.appendChild(title);
+      head.appendChild(ts);
+      card.appendChild(head);
+
+      renderColorMenu(card, m);
+
+      const sections = (m.sections || []).slice().sort((a, b) => stampToTime(b.createdAt) - stampToTime(a.createdAt));
+      sections.forEach(section => renderSectionContent(card, m, section));
     }
 
     function startEdit(m) {
@@ -912,7 +1290,7 @@ row.appendChild(sub);
       if (!state.editingId || !state.editDraft) return;
       const idx = state.memos.findIndex(mm => mm.id === state.editingId);
       if (idx >= 0) {
-        state.memos[idx] = { ...state.memos[idx], ...state.editDraft };
+        state.memos[idx] = ensureMemoDefaults({ ...state.memos[idx], ...state.editDraft });
         persist();
       }
       cancelEdit();
@@ -923,143 +1301,142 @@ row.appendChild(sub);
       const wrap = document.createElement('div');
       wrap.className = 'edit-grid';
 
-      // Row 1: title and timestamp (read-only timestamp)
       const head = document.createElement('div');
       head.className = 'memo-head';
+
       const titleIn = document.createElement('input');
       titleIn.type = 'text';
       titleIn.value = d.title || '';
       titleIn.placeholder = '(Title)';
       titleIn.addEventListener('input', () => { d.title = titleIn.value; });
+
       const ts = document.createElement('div');
       ts.className = 'ts';
-      ts.textContent = m.createdAt;
+      ts.textContent = m.createdAt || '';
+
       head.appendChild(titleIn);
       head.appendChild(ts);
 
-
-
-
-
-      // Row 2: subtitle and priority + 긴급 + color
       const sub = document.createElement('div');
       sub.className = 'memo-sub';
+
       const subtitleIn = document.createElement('input');
       subtitleIn.type = 'text';
       subtitleIn.placeholder = '(subtitle)';
       subtitleIn.value = d.subtitle || '';
       subtitleIn.addEventListener('input', () => { d.subtitle = subtitleIn.value; });
+
       const prioWrap = document.createElement('div');
       prioWrap.className = 'hstack right';
 
-      // segmented priority buttons in edit mode
       const prioSeg = document.createElement('div');
       prioSeg.className = 'prio-seg';
+
       function renderEditPrio() {
         prioSeg.innerHTML = '';
         for (let i = 1; i <= 5; i++) {
           const b = document.createElement('button');
           b.type = 'button';
-          b.className = 'seg' + (i === parseInt(d.priority,10) ? ' active' : '');
+          b.className = 'seg' + (i === parseInt(d.priority, 10) ? ' active' : '');
           b.textContent = String(i);
-          b.addEventListener('click', () => { d.priority = i; renderEditPrio(); });
+          b.addEventListener('click', () => {
+            d.priority = i;
+            renderEditPrio();
+          });
           prioSeg.appendChild(b);
         }
       }
       renderEditPrio();
 
-      const urgentBtn = document.createElement('button');
-      urgentBtn.type = 'button';
-      urgentBtn.className = 'urgent' + (d.urgent ? ' active' : '');
-      urgentBtn.textContent = '긴급';
-      urgentBtn.addEventListener('click', () => {
-        d.urgent = !d.urgent; urgentBtn.classList.toggle('active', d.urgent);
-      });
-
-      const colorSel = document.createElement('select');
-      colorSel.className = 'color-select';
-      COLOR_OPTIONS.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c; opt.textContent = c; opt.style.background = c;
-        if ((d.bg || DEFAULT_BG) === c) opt.selected = true;
-        colorSel.appendChild(opt);
-      });
-      colorSel.addEventListener('change', () => { d.bg = colorSel.value; });
-
       prioWrap.appendChild(prioSeg);
-
-
       sub.appendChild(subtitleIn);
       sub.appendChild(prioWrap);
 
-      // Row 3: lines (editable with add/remove)
       const linesWrap = document.createElement('div');
       linesWrap.className = 'edit-lines list';
 
       function renderEditLines() {
         linesWrap.innerHTML = '';
         (d.lines || (d.lines = [])).forEach((line) => {
+          ensureLineDefaults(line);
+
           const row = document.createElement('div');
           row.className = 'line';
+
           const cb = document.createElement('input');
           cb.type = 'checkbox';
           cb.checked = !!line.checked;
-          cb.addEventListener('change', () => { line.checked = cb.checked; line.checkedAt = cb.checked ? nowStamp() : null; });
-
+          cb.addEventListener('change', () => {
+            line.checked = cb.checked;
+            line.checkedAt = cb.checked ? nowStamp() : null;
+          });
 
           const text = document.createElement('textarea');
-text.className = 'memo-edit';
-text.placeholder = '(memo)';
-text.value = line.text || '';
+          text.className = 'memo-edit';
+          text.placeholder = '(memo)';
+          text.value = line.text || '';
 
-// 자동 높이
-const autoResize = () => {
-  text.style.height = 'auto';
-  text.style.height = text.scrollHeight + 'px';
-};
-autoResize();
+          const autoResize = () => {
+            text.style.height = 'auto';
+            text.style.height = text.scrollHeight + 'px';
+          };
+          autoResize();
 
-text.addEventListener('input', () => {
-  line.text = text.value;
-  autoResize();
-});
+          text.addEventListener('input', () => {
+            line.text = text.value;
+            autoResize();
+          });
 
-// Enter 동작:
-// - Shift+Enter: 줄바꿈 허용
-// - Enter(단독): 기본 줄바꿈 막고 다음 항목으로 포커스 (마지막이면 새 항목 추가 후 이동)
-text.addEventListener('keydown', (e) => {
-  if (e.key !== 'Enter') return;
+          text.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            if (e.shiftKey) {
+              setTimeout(autoResize, 0);
+              return;
+            }
+            e.preventDefault();
+            const idx = d.lines.indexOf(line);
+            if (idx < d.lines.length - 1) {
+              focusEditLine(idx + 1);
+            } else {
+              d.lines.push(ensureLineDefaults({
+                id: uid(),
+                text: '',
+                checked: false,
+                checkedAt: null,
+                subPrio: 2,
+                tag: '',
+                progressLogs: []
+              }));
+              renderEditLines();
+              focusEditLine(d.lines.length - 1);
+            }
+          });
 
-  if (e.shiftKey) {
-    // 줄바꿈 허용(기본 동작 유지)
-    // 높이 재계산만 살짝 지연
-    setTimeout(autoResize, 0);
-    return;
-  }
+          const sub = document.createElement('div');
+          renderSubPrioSeg(sub, line.subPrio ?? 2, (val) => { line.subPrio = val; });
 
-  // Enter 단독: 줄바꿈 대신 이동/추가
-  e.preventDefault();
+          const tagSel = document.createElement('select');
+          tagSel.className = 'tag-select';
+          const emptyOpt = document.createElement('option');
+          emptyOpt.value = '';
+          emptyOpt.textContent = '태그';
+          tagSel.appendChild(emptyOpt);
 
-  // 현재 라인의 인덱스
-  const idx = d.lines.indexOf(line);
+          TAG_OPTIONS.forEach(tag => {
+            const opt = document.createElement('option');
+            opt.value = tag;
+            opt.textContent = tag;
+            if ((line.tag || '') === tag) opt.selected = true;
+            tagSel.appendChild(opt);
+          });
 
-  if (idx < d.lines.length - 1) {
-    // 다음 라인으로 포커스
-    focusEditLine(idx + 1);
-  } else {
-    // 마지막이면 새 라인 추가 후 포커스
-    const newLine = { id: uid(), text: '', checked: false, checkedAt: null, subPrio: 2 };
-    d.lines.push(newLine);
-    renderEditLines();                 // 리스트 다시 그림
-    focusEditLine(d.lines.length - 1); // 새 라인으로 포커스
-  }
-});
+          tagSel.addEventListener('change', () => {
+            line.tag = tagSel.value;
+          });
 
-
-const sub = document.createElement('div'); // [ADDED]
-renderSubPrioSeg(sub, line.subPrio ?? 2, (val) => { line.subPrio = val; });
           const ctrls = document.createElement('div');
           ctrls.className = 'hstack right';
+
           const rm = document.createElement('button');
           rm.type = 'button';
           rm.className = 'icon danger';
@@ -1067,46 +1444,82 @@ renderSubPrioSeg(sub, line.subPrio ?? 2, (val) => { line.subPrio = val; });
           rm.title = 'Remove line';
           rm.addEventListener('click', () => {
             d.lines = d.lines.filter(l => l !== line);
-            if (d.lines.length === 0) d.lines.push({ text: '', checked: false, checkedAt: null });
+            if (d.lines.length === 0) {
+              d.lines.push(ensureLineDefaults({
+                id: uid(),
+                text: '',
+                checked: false,
+                checkedAt: null,
+                subPrio: 2,
+                tag: '',
+                progressLogs: []
+              }));
+            }
             renderEditLines();
           });
+
           ctrls.appendChild(rm);
+
           row.appendChild(cb);
-
           row.appendChild(text);
-
+          row.appendChild(sub);
+          row.appendChild(tagSel);
           row.appendChild(ctrls);
           linesWrap.appendChild(row);
         });
+
         const add = document.createElement('div');
         add.className = 'hstack right';
+
         const addBtn = document.createElement('button');
         addBtn.type = 'button';
         addBtn.className = 'icon ghost';
         addBtn.textContent = '+';
         addBtn.title = 'Add line';
         addBtn.addEventListener('click', () => {
-          d.lines.push({ text: '', checked: false, checkedAt: null });
+          d.lines.push(ensureLineDefaults({
+            id: uid(),
+            text: '',
+            checked: false,
+            checkedAt: null,
+            subPrio: 2,
+            tag: '',
+            progressLogs: []
+          }));
           renderEditLines();
         });
+
         add.appendChild(addBtn);
         linesWrap.appendChild(add);
       }
 
-      if (!Array.isArray(d.lines) || d.lines.length === 0) d.lines = [{ text: '', checked: false, checkedAt: null }];
+      if (!Array.isArray(d.lines) || d.lines.length === 0) {
+        d.lines = [ensureLineDefaults({
+          id: uid(),
+          text: '',
+          checked: false,
+          checkedAt: null,
+          subPrio: 2,
+          tag: '',
+          progressLogs: []
+        })];
+      }
       renderEditLines();
 
       const actions = document.createElement('div');
       actions.className = 'btns';
+
       const cancel = document.createElement('button');
       cancel.type = 'button';
       cancel.textContent = 'Cancel';
       cancel.addEventListener('click', cancelEdit);
+
       const save = document.createElement('button');
       save.type = 'button';
       save.className = 'primary';
       save.textContent = 'Save changes';
       save.addEventListener('click', saveEdit);
+
       actions.appendChild(cancel);
       actions.appendChild(save);
 
@@ -1117,53 +1530,129 @@ renderSubPrioSeg(sub, line.subPrio ?? 2, (val) => { line.subPrio = val; });
       card.appendChild(wrap);
     }
 
-    // --- Save flow for new memo ---
-function saveMemo() {
-  const title = (titleInput.value || '').trim();
-  const subtitle = (subtitleInput.value || '').trim();
-  const priority = parseInt(state.composer.priority, 10) || 3; // [CHANGED] default 3
-  const lines = state.composer.lines.map(l => ({
-    text: (l.text || '').trim(),
-    checked: !!l.checked,
-    checkedAt: l.checked ? (l.checkedAt || nowStamp()) : null,
-    subPrio: (l.subPrio == null ? 2 : l.subPrio) // [ADDED]
-  }));
+    function saveMemo() {
+      const title = (titleInput.value || '').trim();
+      const subtitle = (subtitleInput.value || '').trim();
+      const priority = parseInt(state.composer.priority, 10) || 3;
 
-  if (!lines.length) addLine('', false);
+      const lines = state.composer.lines.map(l => ensureLineDefaults({
+        id: l.id || uid(),
+        text: (l.text || '').trim(),
+        checked: !!l.checked,
+        checkedAt: l.checked ? (l.checkedAt || nowStamp()) : null,
+        subPrio: (l.subPrio == null ? 2 : l.subPrio),
+        tag: l.tag || '',
+        progressLogs: Array.isArray(l.progressLogs) ? l.progressLogs : []
+      }));
 
-  const memo = {
-    id: uid(),
-    createdAt: nowStamp(),
-    title, subtitle, priority,
-    urgent: false,
-    bg: DEFAULT_BG,
-    lines
-  };
+      const memo = ensureMemoDefaults({
+        id: uid(),
+        createdAt: nowStamp(),
+        title,
+        subtitle,
+        priority,
+        urgent: false,
+        bg: DEFAULT_BG,
+        lines
+      });
 
-  state.memos.unshift(memo);
-  persist();
+      state.memos.unshift(memo);
+      persist();
 
-  // reset
-  titleInput.value = '';
-  subtitleInput.value = '';
-  state.composer.lines = [{ id: uid(), text: '', checked: false, checkedAt: null, subPrio: 2 }]; // [CHANGED]
-  renderComposerLines();
-  renderSaved();
-}
+      titleInput.value = '';
+      subtitleInput.value = '';
+      state.composer.lines = [ensureLineDefaults({
+        id: uid(),
+        text: '',
+        checked: false,
+        checkedAt: null,
+        subPrio: 2,
+        tag: '',
+        progressLogs: []
+      })];
 
-    // --- Wire up ---
+      renderComposerLines();
+      renderSaved();
+    }
+
+    function buildSectionFromMemo(m) {
+      return {
+        id: uid(),
+        sourceMemoId: m.id,
+        subtitle: m.subtitle || '',
+        priority: m.priority == null ? 3 : m.priority,
+        urgent: !!m.urgent,
+        createdAt: m.createdAt || nowStamp(),
+        lines: JSON.parse(JSON.stringify(m.lines || []))
+      };
+    }
+
+    function mergeSameTitleMemosOnce() {
+      const map = new Map();
+      const result = [];
+
+      state.memos.forEach(memo => {
+        ensureMemoDefaults(memo);
+        const key = (memo.title || '').trim() || '(Untitled)';
+
+        if (!map.has(key)) {
+          map.set(key, result.length);
+          result.push(memo);
+          return;
+        }
+
+        const targetIndex = map.get(key);
+        let target = result[targetIndex];
+
+        if (!isMergedMemo(target)) {
+          target = {
+            id: target.id,
+            createdAt: target.createdAt,
+            title: target.title,
+            bg: target.bg || DEFAULT_BG,
+            sections: [buildSectionFromMemo(target)]
+          };
+          result[targetIndex] = target;
+        }
+
+        const sectionsToAdd = isMergedMemo(memo)
+          ? JSON.parse(JSON.stringify(memo.sections || []))
+          : [buildSectionFromMemo(memo)];
+
+        sectionsToAdd.forEach(s => {
+          if (!s.id) s.id = uid();
+          if (!Array.isArray(s.lines)) s.lines = [];
+          s.lines.forEach(l => ensureLineDefaults(l));
+        });
+
+        target.sections.push(...sectionsToAdd);
+
+        target.createdAt = target.sections
+          .slice()
+          .sort((a, b) => stampToTime(b.createdAt) - stampToTime(a.createdAt))[0]?.createdAt || target.createdAt;
+      });
+
+      state.memos = result.map(m => ensureMemoDefaults(m));
+    }
+
     addLineBtn.addEventListener('click', () => addLine('', false));
     saveBtn.addEventListener('click', saveMemo);
+
     sortBtn.addEventListener('click', () => {
-  state.sortMode = (state.sortMode === 'priority') ? 'time' : 'priority';
-  updateSortButton();
-  renderSaved();
-});
+      state.sortMode = (state.sortMode === 'priority') ? 'time' : 'priority';
+      updateSortButton();
+      renderSaved();
+    });
+
+    groupBtn.addEventListener('click', () => {
+      mergeSameTitleMemosOnce();
+      persist();
+      renderSaved();
+    });
 
     titleInput.addEventListener('input', () => state.composer.title = titleInput.value);
     subtitleInput.addEventListener('input', () => state.composer.subtitle = subtitleInput.value);
 
-    // --- Priority segmented control (composer) ---
     function renderPrioritySeg(el, current, onChange) {
       el.innerHTML = '';
       const box = document.createElement('div');
@@ -1179,21 +1668,21 @@ function saveMemo() {
       el.appendChild(box);
     }
 
-function renderSubPrioSeg(el, current, onChange) {
-  el.innerHTML = '';
-  const box = document.createElement('div');
-  box.className = 'prio-seg sub-seg';
-  const opts = [1,2,3,4, 5]; // 4 == S, 5 == E
-  opts.forEach(v => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'seg' + (v === (parseInt(current,10)||2) ? ' active' : '');
-    b.textContent = (v === 4) ? 'S' : (v === 5 ? 'E' : String(v));
-    b.addEventListener('click', () => onChange(v));
-    box.appendChild(b);
-  });
-  el.appendChild(box);
-}
+    function renderSubPrioSeg(el, current, onChange) {
+      el.innerHTML = '';
+      const box = document.createElement('div');
+      box.className = 'prio-seg sub-seg';
+      const opts = [1, 2, 3, 4, 5];
+      opts.forEach(v => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'seg' + (v === (parseInt(current, 10) || 2) ? ' active' : '');
+        b.textContent = (v === 4) ? 'S' : (v === 5 ? '!' : String(v));
+        b.addEventListener('click', () => onChange(v));
+        box.appendChild(b);
+      });
+      el.appendChild(box);
+    }
 
     function refreshComposerPriority() {
       renderPrioritySeg(prioritySegEl, state.composer.priority, (val) => {
@@ -1201,141 +1690,161 @@ function renderSubPrioSeg(el, current, onChange) {
         refreshComposerPriority();
       });
     }
-    // priority handled by segmented control
 
-document.getElementById('exportBtn').addEventListener('click', () => {
-  const fileName = prompt("저장할 파일 이름을 입력하세요:", "memos-backup.json");
-  if (!fileName) return;
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const fileName = prompt("저장할 파일 이름을 입력하세요:", "memos-backup.json");
+      if (!fileName) return;
 
-  const dataStr = JSON.stringify(state.memos, null, 2);
-  const blob = new Blob([dataStr], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
+      const dataStr = JSON.stringify(state.memos, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
 
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName.endsWith(".json") ? fileName : fileName + ".json";
-  a.click();
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName.endsWith(".json") ? fileName : fileName + ".json";
+      a.click();
 
-  URL.revokeObjectURL(url);
-});
-// Import: 불러오기
-const importFileInput = document.getElementById('importFileInput');
+      URL.revokeObjectURL(url);
+    });
 
-document.getElementById('importBtn').addEventListener('click', () => {
-  importFileInput.value = ''; // 같은 파일 다시 선택해도 이벤트 뜨게
-  importFileInput.click();
-});
+    const importFileInput = document.getElementById('importFileInput');
 
-importFileInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    document.getElementById('importBtn').addEventListener('click', () => {
+      importFileInput.value = '';
+      importFileInput.click();
+    });
 
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    try {
-      const imported = JSON.parse(ev.target.result);
-      if (Array.isArray(imported)) {
-        state.memos = imported;
-        persist();
-        renderSaved();
-        alert('메모를 불러왔습니다!');
-      } else {
-        alert('잘못된 파일 형식입니다.');
+    importFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const imported = JSON.parse(ev.target.result);
+          if (Array.isArray(imported)) {
+            state.memos = imported.map(m => ensureMemoDefaults(m));
+            persist();
+            renderSaved();
+            alert('메모를 불러왔습니다!');
+          } else {
+            alert('잘못된 파일 형식입니다.');
+          }
+        } catch (err) {
+          alert('불러오기 실패: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function renderSPanel() {
+      const listEl = document.getElementById('sList');
+      if (!listEl) return;
+      listEl.innerHTML = '';
+
+      const sItems = [];
+
+      state.memos.forEach(m => {
+        if (isMergedMemo(m)) {
+          (m.sections || []).forEach(section => {
+            (section.lines || []).forEach(l => {
+              ensureLineDefaults(l);
+              if ((parseInt(l.subPrio, 10) || 0) === 4 && !l.checked) {
+                sItems.push({ memo: m, section, line: l });
+              }
+            });
+          });
+        } else {
+          (m.lines || []).forEach(l => {
+            ensureLineDefaults(l);
+            if ((parseInt(l.subPrio, 10) || 0) === 4 && !l.checked) {
+              sItems.push({ memo: m, section: null, line: l });
+            }
+          });
+        }
+      });
+
+      sItems.sort((a, b) => {
+        const ap = a.section ? sectionPriorityValue(a.section) : memoPriorityValue(a.memo);
+        const bp = b.section ? sectionPriorityValue(b.section) : memoPriorityValue(b.memo);
+        if (bp !== ap) return bp - ap;
+        const at = stampToTime(a.section ? a.section.createdAt : a.memo.createdAt);
+        const bt = stampToTime(b.section ? b.section.createdAt : b.memo.createdAt);
+        return bt - at;
+      });
+
+      if (!sItems.length) {
+        const empty = document.createElement('div');
+        empty.className = 'progress-empty';
+        empty.textContent = '샘플링 목록 비어있음';
+        listEl.appendChild(empty);
+        return;
       }
-    } catch (err) {
-      alert('불러오기 실패: ' + err.message);
+
+      sItems.forEach(({ memo, section, line }) => {
+        const row = document.createElement('div');
+        row.className = 'sline';
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = !!line.checked;
+        cb.addEventListener('change', () => {
+          line.checked = cb.checked;
+          line.checkedAt = cb.checked ? nowStamp() : null;
+          persist();
+          renderSaved();
+        });
+
+        const badge = document.createElement('span');
+        badge.className = 'badge';
+        badge.textContent = 'S';
+
+        const tagBox = document.createElement('div');
+        tagBox.className = 'tag-badge';
+        tagBox.textContent = line.tag || '-';
+
+        const text = document.createElement('div');
+        text.className = 's-text';
+        text.textContent = line.text || '';
+
+        const meta = document.createElement('div');
+        meta.className = 's-meta';
+        meta.textContent = section
+          ? `${memo.title || '(Untitled)'} / ${section.subtitle || '(소제목 없음)'}`
+          : (memo.subtitle || '(Untitled)');
+
+        row.appendChild(cb);
+        row.appendChild(badge);
+        row.appendChild(tagBox);
+        row.appendChild(text);
+        row.appendChild(meta);
+        listEl.appendChild(row);
+      });
     }
-  };
-  reader.readAsText(file);
-});
 
+    function focusEditLine(index) {
+      const nodes = document.querySelectorAll('.line textarea.memo-edit');
+      const el = nodes[index];
+      if (el) {
+        el.focus();
+        const len = el.value.length;
+        el.setSelectionRange(len, len);
+      }
+    }
 
-    // --- Init ---
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.menu') && !e.target.closest('.kebab')) {
+        document.querySelectorAll('.menu.open').forEach(el => el.classList.remove('open'));
+        document.querySelectorAll('.submenu.open').forEach(el => el.classList.remove('open'));
+      }
+    });
+
     load();
     updateSortButton();
-    if (!Array.isArray(state.memos)) state.memos = [];
     ensureAtLeastOneLine();
     renderComposerLines();
     refreshComposerPriority();
     renderSaved();
-
-// S 패널: subPrio === 4(S) 인 항목만 수집하여 보여주기 (체크된 건 제외)
-function renderSPanel() {
-  const listEl = document.getElementById('sList');
-  if (!listEl) return;
-  listEl.innerHTML = '';
-
-  // 모든 메모에서 S 항목 수집
-  const sItems = [];
-  state.memos.forEach(m => {
-    (m.lines || []).forEach((l) => {
-      const v = parseInt(l.subPrio, 10) || 0; // S=4, E=5 기준
-      if (v === 4 && !l.checked) {
-        sItems.push({ m, l });
-      }
-    });
-  });
-
-  // 우선순위 높은 메모 먼저 (동률이면 최신 메모 먼저)
-  sItems.sort((a, b) => {
-    const ap = parseInt(a.m.priority, 10) || 0;
-    const bp = parseInt(b.m.priority, 10) || 0;
-    if (bp !== ap) return bp - ap;
-    const at = new Date(a.m.createdAt || 0).getTime();
-    const bt = new Date(b.m.createdAt || 0).getTime();
-    return bt - at;
-  });
-
-  if (!sItems.length) {
-    const empty = document.createElement('div');
-    empty.className = 'muted';
-    empty.textContent = '샘플링 목록 비어있음';
-    listEl.appendChild(empty);
-    return;
-  }
-
-  sItems.forEach(({ m, l }) => {
-    const row = document.createElement('div');
-    row.className = 'sline';
-
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.checked = !!l.checked;
-    cb.addEventListener('change', () => {
-      l.checked = cb.checked;
-      l.checkedAt = cb.checked ? nowStamp() : null;
-      persist();        // 로컬+클라우드 반영
-      renderSaved();    // 메인/패널 동시 갱신
-    });
-
-    const badge = document.createElement('span');
-    badge.className = 'badge';
-    badge.textContent = 'S';
-
-    const text = document.createElement('div');
-    text.className = 's-text';
-    text.textContent = l.text || '';
-
-    const meta = document.createElement('div');
-    meta.className = 's-meta';
-    meta.textContent = m.subtitle || '(Untitled)';
-
-    row.appendChild(cb);
-
-    row.appendChild(text);
-    row.appendChild(meta);
-    listEl.appendChild(row);
-  });
-}
-function focusEditLine(index) {
-  const nodes = document.querySelectorAll('.line textarea.memo-edit');
-  const el = nodes[index];
-  if (el) {
-    el.focus();
-    const len = el.value.length;
-    el.setSelectionRange(len, len); // 커서를 끝으로
-  }
-}
   </script>
 </body>
 </html>
