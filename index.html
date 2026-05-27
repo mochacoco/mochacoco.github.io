@@ -1,16 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0; url=https://sites.google.com/view/pirol">
-<title>Redirecting...</title>
-<script>
-window.location.href = "https://sites.google.com/view/pirol";
-</script>
+<title>Pirol</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.25s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .modal-box {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 32px 44px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 420px;
+    width: 85%;
+    animation: popIn 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+
+  .modal-header {
+    font-size: 15px;
+    color: #888;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .modal-title {
+    font-size: 20px;
+    color: #222;
+    margin-bottom: 18px;
+    font-weight: bold;
+  }
+
+  .modal-message {
+    font-size: 22px;
+    color: #d32f2f;
+    margin: 22px 0 28px;
+    font-weight: bold;
+    line-height: 1.5;
+  }
+
+  .modal-divider {
+    height: 1px;
+    background: #eee;
+    margin: 20px 0;
+  }
+
+  .modal-button {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    padding: 12px 38px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .modal-button:hover {
+    background: #1565c0;
+  }
+
+  .modal-button:active {
+    transform: scale(0.97);
+  }
+
+  .modal-sub {
+    font-size: 13px;
+    color: #999;
+    margin-top: 14px;
+  }
+
+  .fallback {
+    text-align: center;
+    padding: 40px 20px;
+    color: #555;
+  }
+
+  .fallback a {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>
 </head>
 <body>
-<p>If you are not redirected automatically, please visit 
-<a href="https://sites.google.com/view/pirol">https://sites.google.com/view/pirol</a>.
-</p>
+
+  <div class="modal-overlay" id="popup">
+    <div class="modal-box">
+      <div class="modal-header">📢 NOTICE</div>
+      <div class="modal-title">공지사항</div>
+      <div class="modal-divider"></div>
+      <div class="modal-message">
+        2026년 2학기 신입생<br>
+        잔여 TO 1명
+      </div>
+      <button class="modal-button" onclick="redirect()">확인</button>
+      <div class="modal-sub">확인을 누르시면 홈페이지로 이동합니다</div>
+    </div>
+  </div>
+
+  <noscript>
+    <div class="fallback">
+      <p>JavaScript가 비활성화되어 있습니다.</p>
+      <p><a href="https://sites.google.com/view/pirol">여기를 클릭</a>하여 홈페이지로 이동하세요.</p>
+    </div>
+  </noscript>
+
+  <script>
+    function redirect() {
+      window.location.href = "https://sites.google.com/view/pirol";
+    }
+
+    // 오버레이 바깥 클릭 시에도 이동 (원하지 않으면 주석 처리)
+    document.getElementById('popup').addEventListener('click', function(e) {
+      if (e.target === this) {
+        redirect();
+      }
+    });
+
+    // 자동 이동을 원하면 아래 줄의 주석을 해제하세요 (8초 후 자동 이동)
+    // setTimeout(redirect, 8000);
+  </script>
+
 </body>
 </html>
